@@ -1,0 +1,33 @@
+---
+import { handleStyleProps, StyleProps } from '@/utils/handleStyleProps';
+import type { PrimaryShades } from '@/utils/types';
+
+interface Props extends StyleProps {
+	style?: Record<string, any>;
+	component?: keyof HTMLElementTagNameMap;
+	shade?: PrimaryShades;
+}
+const props = Astro.props as Props;
+const Element = props.component || 'div';
+const shade = props.shade ?? 300;
+const styles = {
+	backgroundColor: props.shade ? `rgb(var(--primary-${shade}))` : '',
+	boxShadow: props.shade
+		? `0px 0px 96px 0px rgb(var(--primary-${shade < 1200 ? shade + 100 : shade}))`
+		: '',
+	...props.style,
+	...handleStyleProps(props),
+};
+---
+
+<style lang='scss'>
+	.root {
+		background-color: rgb(var(--primary-300));
+		box-shadow: 0px 0px 96px 0px rgb(var(--primary-400));
+		border-radius: var(--radius);
+		box-shadow: 0px 0px 96px 0px rgb(var(--primary-400));
+	}
+</style>
+<Element style={styles} class='root'>
+	<slot />
+</Element>

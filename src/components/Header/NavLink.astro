@@ -1,0 +1,31 @@
+---
+export interface Props {
+	href: string;
+	label: string;
+}
+
+const { href, label } = Astro.props as Props;
+const isActive = Astro.url.pathname === href || Astro.url.pathname.slice(undefined, -1) === href;
+---
+<style lang="scss">
+	.root {
+		padding: var(--spacing-md) var(--spacing-xl);
+		font-weight: 500;
+		color: var(--text-color);
+		text-decoration: none;
+		border-radius: var(--radius);
+
+		&:not(&[data-active]):hover {
+			background-color: rgba(var(--primary-300), 0.5);
+		}
+
+		&[data-active] {
+			background-color: rgba(var(--primary-700), 0.5);
+
+			&[data-active]:hover {
+				background-color: rgb(var(--primary-700));
+			}
+		}
+	}
+</style>
+<a data-active={isActive} href={href} class="root">{label}</a>

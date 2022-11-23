@@ -1,0 +1,47 @@
+---
+layout: '@/layouts/PostLayout.astro'
+title: 'Example'
+summary: 'Shows properties which should be in the frontmatter'
+author: 'Isaiah Gamble'
+publishDate: '22 November 2022'
+editDate: '(optional) Date this post was last edited'
+---
+
+import Code from '@/components/Code/Code.astro';
+
+# Getting started with an example
+
+<Code
+	code={`
+console.log('ur mom');
+type sus = {};
+const amogus = 123;
+// comment
+const func = (param: string) => {};
+function func2(param: number) {}
+`}
+	lang='ts'
+/>
+
+<Code
+	code={`
+fn main() {
+	let variable: i32 = 1;
+
+    struct MyStruct<'a, T> {
+    	property: &'a str
+		generic: T
+    }
+
+	impl<'a, T: Clone> MyStruct<'a, T> {
+		pub fn clone(&self) -> Self {
+			self.clone()
+		}
+	}
+}
+`}
+fileName='src/main.rs'
+lang='rs'
+/>
+
+This is some text for my paragraph. Yes I love Rust language it is really cool, but I also like TypeScript, so how can i use them otether?

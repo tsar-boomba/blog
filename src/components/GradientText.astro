@@ -1,0 +1,34 @@
+---
+import { handleStyleProps, StyleProps } from '@/utils/handleStyleProps';
+
+interface Props extends StyleProps {
+	style?: Record<string, any>;
+	component?: keyof HTMLElementTagNameMap;
+	gradient?: string;
+}
+
+const props = Astro.props as Props;
+const Element = props.component || 'span';
+const styles = {
+	backgroundImage: props.gradient,
+	...props.style,
+	...handleStyleProps(props),
+};
+---
+
+<style lang='scss'>
+	.root {
+		display: inline-block;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-image: linear-gradient(
+			198deg,
+			rgb(var(--primary-500)) 20%,
+			rgb(var(--primary-300)) 60%,
+			#850081 90%
+		);
+	}
+</style>
+<Element {...props} style={styles} class='root'>
+	<slot />
+</Element>

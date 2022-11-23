@@ -1,0 +1,18 @@
+---
+import type { StyleProps } from '@/utils/handleStyleProps';
+import Flex from './Flex.astro';
+
+interface Props extends StyleProps {
+	align?: 'center' | 'flex-start' | 'flex-end';
+	justify?: 'center' | 'flex-start' | 'flex-end';
+	gap?: string | number;
+	style?: Record<string, any>;
+	component?: keyof HTMLElementTagNameMap;
+	noWrap?: boolean;
+}
+const props = Astro.props as Props;
+---
+
+<Flex {...props} direction='column'>
+	<slot />
+</Flex>

@@ -1,0 +1,66 @@
+---
+import Section from "./Section.astro";
+
+---
+
+<style lang='scss'>
+	$breakpoint: 700px;
+
+	.hero {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		padding: 4rem 0 16rem 0;
+	}
+
+	.hero-title {
+		font-size: 64px;
+		margin: 0;
+		text-align: center;
+
+		& > span {
+			background-clip: text;
+			-webkit-text-fill-color: transparent;
+			background-image: linear-gradient(
+				198deg,
+				rgb(var(--primary-500)) 20%,
+				rgb(var(--primary-300)) 60%,
+				#fe37f7 90%
+			);
+		}
+
+		:root[data-theme='dark'] & > span {
+			background-image: linear-gradient(
+				195deg,
+				rgb(var(--primary-400)) 24%,
+				rgb(var(--primary-200)) 60%,
+				#fe62f9 90%
+			);
+		}
+
+		:root[data-theme='light'] & > span {
+			background-image: linear-gradient(
+				198deg,
+				rgb(var(--primary-900)) 20%,
+				rgb(var(--primary-600)) 60%,
+				#ce0fc8 90%
+			);
+		}
+	}
+
+	.hero-text {
+		font-size: 24px;
+		max-width: 800px;
+		text-align: center;
+	}
+
+	@media only screen and (max-width: $breakpoint) {
+		.hero-title {
+			font-size: 48px;
+		}
+	}
+</style>
+<Section class='hero'>
+	<h1 class='hero-title'><span>Isaiah Gamble</span></h1>
+	<p class='hero-text'>A blog about web development</p>
+</Section>

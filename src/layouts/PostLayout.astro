@@ -1,0 +1,52 @@
+---
+import Box from '@/components/Box.astro';
+import Group from '@/components/Group.astro';
+import type SimpleGrid from '@/components/SimpleGrid.astro';
+import Stack from '@/components/Stack.astro';
+import type { PostFrontmatter } from '@/utils/types';
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+	frontmatter: PostFrontmatter;
+	headings: {
+		depth: 1 | 2 | 3 | 4 | 5 | 6;
+		/** id of heading element on page */
+		slug: string;
+		text: string;
+	}[];
+	file: string;
+	url: string;
+}
+
+const { frontmatter } = Astro.props as Props;
+---
+
+<style lang='scss' is:global>
+	h1 {
+		font-size: 2.5rem;
+	}
+
+	p {
+		font-size: 1.25rem;
+		line-height: 1.5;
+	}
+
+	span {
+		font-size: 1.125rem;
+	}
+
+	.article-container {}
+</style>
+<BaseLayout
+	title={frontmatter.title}
+	description={frontmatter.summary}
+	metas={[{ name: 'author', content: frontmatter.author }]}
+>
+	<Box class=".article-container">
+		
+		<Box component='article' mxw={1200} ml='auto' mr='auto'>
+			<slot />
+		</Box>
+		
+	</Box>
+</BaseLayout>

@@ -1,0 +1,97 @@
+---
+import { getHighlighter } from 'shiki';
+import type { Lang } from 'shiki';
+import { handleStyleProps, StyleProps } from '@/utils/handleStyleProps';
+
+interface Props extends StyleProps {
+	lang: Lang;
+	code: string;
+	fileName?: string;
+	highlightLines?: number[];
+	noLangBadge?: boolean;
+}
+
+const langColorMap: any = {
+	css: { bg: '#264de4', fg: '#fff' },
+	ts: { bg: '#007acc', fg: '#fff' },
+	java: { bg: '#ed8b00', fg: '#fff' },
+	rust: { bg: '#dea584', fg: '#fff' },
+	astro: { bg: '#ff5a03', fg: '#fff' },
+};
+
+const lang: Lang = (() => {
+	let lang = Astro.props.lang;
+
+	if (lang === 'typescript') return 'ts';
+	if (lang === 'javascript') return 'js';
+	if (lang === 'rs') return 'rust';
+	return lang;
+})();
+
+const highlighter = await getHighlighter({
+	theme: 'css-variables',
+});
+
+let codeHtml = highlighter.codeToHtml(Astro.props.code.trim(), { lang });
+
+// goofy ah way to do it
+if (Astro.props.fileName) {
+	codeHtml = codeHtml.replace(`shiki`, `shiki shiki-with-file-name`);
+}
+
+const styles = { ...Astro.props.style, ...handleStyleProps(Astro.props) };
+---
+
+<style lang='scss' is:global>
+	.shiki {
+		overflow-x: auto;
+		padding: 16px;
+		border-radius: var(--radius);
+		margin: 0;
+	}
+
+	.shiki-with-file-name {
+		border-top-left-radius: 0;
+	}
+
+	.shiki-wrapper {
+		margin-top: 16px;
+		margin-bottom: 16px;
+	}
+
+	.language-badge {
+		position: absolute;
+		top: 0px;
+		right: 0px;
+		padding: 4px 8px;
+		font-size: 1.125rem;
+		border-bottom-left-radius: var(--radius);
+		border-top-right-radius: var(--radius);
+		font-weight: 700;
+	}
+
+	.code-file-name {
+		background-color: var(--shiki-color-background);
+		width: fit-content;
+		padding: 4px 16px;
+		border-top-right-radius: var(--radius);
+		border-top-left-radius: var(--radius);
+		border-bottom-left-radius: -16px;
+	}
+</style>
+<div style={styles} class='shiki-wrapper'>
+	{Astro.props.fileName && <div class='code-file-name'>{Astro.props.fileName}</div>}
+	<div style={{ position: 'relative' }}>
+		{
+			lang in langColorMap && !Astro.props.noLangBadge && (
+				<div
+					class='language-badge'
+					style={{ backgroundColor: langColorMap[lang].bg, color: langColorMap[lang].fg }}
+				>
+					{lang.toUpperCase()}
+				</div>
+			)
+		}
+		<Fragment set:html={codeHtml} />
+	</div>
+</div>

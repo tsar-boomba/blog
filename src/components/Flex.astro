@@ -1,0 +1,43 @@
+---
+import { handleStyleProps, resolveUnit, StyleProps } from '@/utils/handleStyleProps';
+
+interface Props extends StyleProps {
+	align?: 'center' | 'flex-start' | 'flex-end';
+	justify?: 'center' | 'flex-start' | 'flex-end';
+	gap?: string | number;
+	style?: Record<string, any>;
+	component?: keyof HTMLElementTagNameMap;
+	direction?: 'row' | 'column';
+	noWrap?: boolean;
+}
+const props = Astro.props as Props;
+const Element = props.component || 'div';
+let styles = { ...props.style, ...handleStyleProps(props) };
+
+if (props.align) {
+	styles.alignItems = props.align;
+}
+
+if (props.justify) {
+	styles.justifyContent = props.justify;
+}
+
+if (props.direction) {
+	styles.flexDirection = props.direction;
+}
+
+if (props.noWrap) {
+	styles.flexWrap = 'nowrap';
+}
+
+if (props.gap) {
+	styles.gap = resolveUnit(props.gap);
+}
+---
+<style lang="scss">
+	.root {
+		display: flex;
+		flex-flow: wrap;
+	}
+</style>
+<Element style={styles} class="root"><slot /></Element>

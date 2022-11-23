@@ -1,0 +1,75 @@
+@use './utils';
+
+html {
+	--radius: 8px;
+	--spacing-sm: 4px;
+	--spacing-md: 8px;
+	--spacing-lg: 12px;
+	--spacing-xl: 16px;
+}
+
+html[data-theme='light'] {
+	--bg-color-from: #feffe3;
+	--bg-color-to: #fdfff5;
+	--text-color: #270158;
+
+	// change hex to rgb so can add alpha channel with rgba()
+	--primary-100: #{utils.hexToRGB(#fbfdff)};
+	--primary-200: #{utils.hexToRGB(#cde8ff)};
+	--primary-300: #{utils.hexToRGB(#a3d6ff)};
+	--primary-400: #{utils.hexToRGB(#7dc5ff)};
+	--primary-500: #{utils.hexToRGB(#5ab5ff)};
+	--primary-600: #{utils.hexToRGB(#3ba7ff)};
+	--primary-700: #{utils.hexToRGB(#1c99ff)};
+	--primary-800: #{utils.hexToRGB(#008cfe)};
+	--primary-900: #{utils.hexToRGB(#007ee5)};
+	--primary-1000: #{utils.hexToRGB(#0072ce)};
+	--primary-1100: #{utils.hexToRGB(#0066b9)};
+	--primary-1200: #{utils.hexToRGB(#005ca7)};
+
+	// For code highlighting
+	--shiki-color-text: #270158;
+	--shiki-color-background: #feffce;
+	--shiki-token-constant: #0092fa;
+	--shiki-token-string: #770000;
+	--shiki-token-comment: #880000;
+	--shiki-token-keyword: #00a220;
+	--shiki-token-parameter: #aa0000;
+	--shiki-token-function: #bb0000;
+	--shiki-token-string-expression: #8f00cc;
+	--shiki-token-punctuation: #dd0000;
+	--shiki-token-link: #0004ff;
+}
+
+html[data-theme='dark'] {
+	--bg-color-from: #270158;
+	--bg-color-to: #190f29;
+	--text-color: #fdfff5;
+
+	// change hex to rgb so can add alpha channel with rgba()
+	--primary-100: #{utils.hexToRGB(#d6dcff)};
+	--primary-200: #{utils.hexToRGB(#abb9ff)};
+	--primary-300: #{utils.hexToRGB(#8498ff)};
+	--primary-400: #{utils.hexToRGB(#617bff)};
+	--primary-500: #{utils.hexToRGB(#4160ff)};
+	--primary-600: #{utils.hexToRGB(#2448ff)};
+	--primary-700: #{utils.hexToRGB(#0730ff)};
+	--primary-800: #{utils.hexToRGB(#0027ec)};
+	--primary-900: #{utils.hexToRGB(#0023d4)};
+	--primary-1000: #{utils.hexToRGB(#001fbf)};
+	--primary-1100: #{utils.hexToRGB(#001cac)};
+	--primary-1200: #{utils.hexToRGB(#00199b)};
+
+	// For code highlighting
+	--shiki-color-text: #ffffff;
+	--shiki-color-background: #11091c;
+	--shiki-token-constant: #fbaaaa;
+	--shiki-token-string: #770000;
+	--shiki-token-comment: #FD971F;
+	--shiki-token-keyword: #00e5ff;
+	--shiki-token-parameter: #FD971F;
+	--shiki-token-function: #A6E22E;
+	--shiki-token-string-expression: #E6DB74;
+	--shiki-token-punctuation: #dd0000;
+	--shiki-token-link: #ee0000;
+}

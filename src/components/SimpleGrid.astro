@@ -1,0 +1,31 @@
+---
+import { handleStyleProps, resolveUnit, StyleProps } from '@/utils/handleStyleProps';
+
+interface Props extends StyleProps {
+	cols: number;
+	component?: keyof HTMLElementTagNameMap;
+	verticalGap?: string | number;
+	horizontalGap?: string | number;
+	gap?: string | number;
+}
+
+const props = Astro.props as Props;
+const Element = props.component || 'div';
+const styles = {
+	gridTemplateColumns: `repeat(${props.cols}, minmax(0, 1fr))`,
+	gap: `${resolveUnit(props.verticalGap ?? props.gap ?? '8px')} ${resolveUnit(
+		props.horizontalGap ?? props.gap ?? '8px',
+	)}`,
+	...props.style,
+	...handleStyleProps(props),
+};
+---
+
+<style lang='scss'>
+	.root {
+		display: grid;
+	}
+</style>
+<Element style={styles} class='root' {...props}>
+	<slot />
+</Element>

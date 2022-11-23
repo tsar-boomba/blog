@@ -1,0 +1,129 @@
+<style lang="scss">
+	#stars {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		z-index: -998;
+	}
+</style>
+<canvas id="stars" />
+<script>
+	;(() => {
+		const canvas = document.getElementById('stars') as HTMLCanvasElement;
+
+		type Star = {
+			x: number;
+			y: number;
+			size: number;
+			// degrees to rotate
+			rotation: number;
+			pointiness?: number;
+			color?: string;
+		};
+
+		let stars: Star[] = [];
+			
+		// inclusive range
+		function randomInt(min: number, max: number) {
+			return Math.floor(Math.random() * (max - min + 1)) + min;
+		}
+
+		// will run on every page navigation
+		const setupCanvas = (canvas: HTMLCanvasElement, genStars?: boolean) => {
+			const ctx = canvas.getContext('2d')!;
+			const html = document.querySelector('html')!;
+			const main = document.querySelector('body')!;
+			const htmlStyle = getComputedStyle(html);
+
+			// Set the "actual" size of the canvas, prevents blurriness on large screens
+			const rect = canvas.getBoundingClientRect();
+			const mainRect = main.getBoundingClientRect();
+			canvas.width = rect.width;
+			canvas.style.height = mainRect.height + 'px';
+			canvas.height = mainRect.height;
+
+			const updateFill = () => {
+				const isDark = html.dataset.theme === 'dark';
+				ctx.fillStyle = `rgb(${htmlStyle.getPropertyValue(isDark ? '--primary-200' : '--primary-600')})`;
+			};
+
+			const drawStar = ({ x, y, color, rotation, pointiness = 3, size }: Star) => {
+				if (color) ctx.fillStyle = color;
+				const pointDistance = size * pointiness;
+
+				ctx.translate(x, y);
+				ctx.rotate(rotation * Math.PI / 180);
+				ctx.translate(-x, -y);
+				ctx.beginPath();
+				ctx.moveTo(x, y - pointDistance);
+				ctx.lineTo(x + size / 2, y - size / 2);
+				ctx.lineTo(x + pointDistance, y + size / 4);
+				ctx.lineTo(x + size / 2, y + size / 2);
+				ctx.lineTo(x - size / 4, y + pointDistance);
+				ctx.lineTo(x - size / 2, y + size / 2);
+				ctx.lineTo(x - pointDistance, y - size / 4);
+				ctx.lineTo(x - size / 2, y - size / 2);
+				ctx.closePath();
+				ctx.setTransform();
+				ctx.fill();
+
+				// set back to default
+				if (color) updateFill();
+			};
+
+			const draw = () => {
+				for (const star of stars) {
+					// dont draw stars that can't be seen
+					if (star.y > mainRect.height) continue;
+
+					drawStar(star);
+				}
+			};
+
+			const generateStars = () => {
+				stars = [];
+				const rect = canvas.getBoundingClientRect();
+				// num stars scales to user screen size
+				// a bit of a hack for now to always generate enough stars for all pages
+				const numStars = (window.innerHeight * (window.innerWidth + 300)) / 27000;
+
+				for (let i = 0; i < numStars; i += 1) {
+					stars[i] = {
+						size: randomInt(1, 3),
+						// keep a padding of 16
+						x: randomInt(16, rect.width - 16),
+						// try not to create any behind header
+						y: randomInt(64, rect.height),
+						rotation: randomInt(0, 90),
+						pointiness: randomInt(1, 2),
+					}
+				}
+			};
+
+			// only gen if the first render
+			if (genStars || stars.length === 0) generateStars();
+			updateFill();
+			draw();
+		};
+
+		// listen for navigation to re setup canvas
+		window.addEventListener('flamethrower:router:end', () => {
+			const canvas = document.getElementById('stars') as HTMLCanvasElement;
+			setupCanvas(canvas);
+		});
+
+		window.addEventListener('resize', () => {
+			const canvas = document.getElementById('stars') as HTMLCanvasElement;
+			setupCanvas(canvas, true);
+		});
+
+		window.addEventListener('themeChange', () => {
+			const canvas = document.getElementById('stars') as HTMLCanvasElement;
+			setupCanvas(canvas);
+		})
+
+		setupCanvas(canvas);
+	})()
+</script>

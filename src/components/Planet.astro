@@ -1,0 +1,43 @@
+---
+import { handleStyleProps, resolveUnit, StyleProps } from '@/utils/handleStyleProps';
+
+interface Props extends StyleProps {
+	style?: Record<string, any>;
+	component?: keyof HTMLElementTagNameMap;
+	diameter?: number;
+	gradient?: string;
+	top: string | number;
+	left: string | number;
+}
+const props = Astro.props as Props;
+const Element = props.component || 'div';
+const widthNumber = props.diameter || 50;
+const top = resolveUnit(props.top);
+const left = resolveUnit(props.left);
+const width = `${widthNumber}px`;
+const boxShadow = `0px 0px ${width} 0px rgba(255, 255, 255, 0.2);`;
+const styles = { ...props.style, ...handleStyleProps(props), maxWidth: width, boxShadow, background: props.gradient ?? '', top, left };
+---
+<style lang="scss">
+	.planet {
+		z-index: -1;
+		position: absolute;
+		width: 50%;
+		border-radius: 50%;
+		box-shadow: 0px 0px 50px 0px rgba(255, 255, 255, 0.3);
+		background: rgb(2,0,36);
+		background: linear-gradient(169deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);
+	}
+
+	.planet::after {
+		content: "";
+		display: block;
+		margin-bottom: 100%;
+	}
+
+	:root[data-theme="light"] .planet {
+		display: none;
+	}
+</style>
+<Element style={styles} class="planet">
+</Element>

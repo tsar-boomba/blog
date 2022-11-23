@@ -1,0 +1,12 @@
+---
+import type { StyleProps } from '@/utils/handleStyleProps';
+import Box from './Box.astro';
+
+interface Props extends StyleProps {
+	component?: keyof HTMLElementTagNameMap;
+}
+---
+
+<Box {...Astro.props} component={Astro.props.component || 'section'}>
+	<slot />
+</Box>
