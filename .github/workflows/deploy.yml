@@ -22,11 +22,11 @@ jobs:
           base: "master"
           filters: |
             src:
-              - !api/**
-              - !LICENSE.txt
-              - !**/README*
-              - !.vscode/**
-              - !.gitignore
+              - '!api/**''
+              - '!LICENSE.txt'
+              - '!**/README*''
+              - '!.vscode/**''
+              - '!.gitignore'
 
   build-pages:
     runs-on: ubuntu-latest
@@ -83,7 +83,9 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
       - name: Install Shuttle
-        run: cargo install cargo-shuttle
+        uses: taiki-e/install-action@v1
+        with:
+          tool: cargo-shuttle
       - name: Login to Shuttle
         run: cargo shuttle login --api-key ${{ secrets.SHUTTLE_API_KEY }}
       - name: Create Secrets.toml
