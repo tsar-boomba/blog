@@ -1,3 +1,5 @@
+// allow for quick n easy styling through props
+
 export type StyleProps = {
 	class?: string;
 	style?: Record<string, any>;
