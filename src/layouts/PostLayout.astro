@@ -35,18 +35,53 @@ const { frontmatter } = Astro.props as Props;
 		font-size: 1.125rem;
 	}
 
-	.article-container {}
+	.article-container {
+	}
+
+	.shiki {
+		overflow-x: auto;
+		padding: 16px;
+		border-radius: var(--radius);
+		margin: 0;
+	}
+
+	.shiki-with-file-name {
+		border-top-left-radius: 0;
+	}
+
+	.shiki-wrapper {
+		margin-top: 16px;
+		margin-bottom: 16px;
+	}
+
+	.language-badge {
+		position: absolute;
+		top: 0px;
+		right: 0px;
+		padding: 4px 8px;
+		font-size: 1.125rem;
+		border-bottom-left-radius: var(--radius);
+		border-top-right-radius: var(--radius);
+		font-weight: 700;
+	}
+
+	.code-file-name {
+		background-color: var(--shiki-color-background);
+		width: fit-content;
+		padding: 4px 16px;
+		border-top-right-radius: var(--radius);
+		border-top-left-radius: var(--radius);
+		border-bottom-left-radius: -16px;
+	}
 </style>
 <BaseLayout
 	title={frontmatter.title}
 	description={frontmatter.summary}
 	metas={[{ name: 'author', content: frontmatter.author }]}
 >
-	<Box class=".article-container">
-		
+	<Box class='.article-container'>
 		<Box component='article' mxw={1200} ml='auto' mr='auto'>
 			<slot />
 		</Box>
-		
 	</Box>
 </BaseLayout>
