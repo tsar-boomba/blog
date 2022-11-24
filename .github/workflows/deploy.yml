@@ -21,7 +21,7 @@ jobs:
         with:
           base: "master"
           filters: |
-            src: *
+            src: './**'
             not-api: '!api/**''
             not-license: '!LICENSE.txt'
             not-readme: '!**/README*''
