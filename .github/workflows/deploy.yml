@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build-pages:
     runs-on: ubuntu-latest
 
     steps:
@@ -30,9 +30,55 @@ jobs:
         with:
           path: dist/
           retention-days: 2
-  deploy:
+
+  api-changes:
     runs-on: ubuntu-latest
-    needs: build
+
+    outputs:
+      changed: ${{ steps.changes.outputs.changed }}
+    steps:
+      - name: Changes
+        id: changes
+        uses: dorny/paths-filter@v2
+        with:
+          base: "master"
+          filters: |
+            src:
+              - api/**
+
+  deploy-api:
+    runs-on: ubuntu-latest
+    needs: api-changes
+    if: ${{ needs.api-changes.outputs.changed }}
+    defaults:
+      run:
+        shell: bash
+        working-directory: api
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: rust-toolchain
+        uses: actions-rs/toolchain@v1.0.6
+        with:
+          profile: minimal
+          toolchain: stable
+      - name: Rust Cache
+        uses: Swatinem/rust-cache@v2
+      - name: Install Shuttle
+        run: cargo install cargo-shuttle
+      - name: Login to Shuttle
+        run: cargo shuttle login --api-key ${{ secrets.SHUTTLE_API_KEY }}
+      - name: Create Secrets.toml
+        # add secrets from repo into a file for shuttle when we deploy
+        run: |
+          touch Secrets.toml
+      - name: Deploy
+        run: cargo shuttle deploy
+
+  deploy-pages:
+    runs-on: ubuntu-latest
+    needs: [build-pages, deploy-api]
+    if: ${{ !failure() && !cancelled() }}
     permissions:
       pages: write      # to deploy to Pages
       id-token: write   # to verify the deployment originates from an appropriate source
