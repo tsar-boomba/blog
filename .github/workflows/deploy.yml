@@ -22,10 +22,10 @@ jobs:
           base: "master"
           filters: |
             src: './**'
-            not-api: '!api/**''
+            not-api: '!./api/**''
             not-license: '!./LICENSE*'
-            not-readme: '!**/README*''
-            not-vscode: '!.vscode/**''
+            not-readme: '!./**/README*''
+            not-vscode: '!./.vscode/**''
             not-gitignore: '!./.gitignore'
 
   build-pages:
