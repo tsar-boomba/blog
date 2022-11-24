@@ -30,7 +30,7 @@ jobs:
   build-pages:
     runs-on: ubuntu-latest
     needs: pages-changes
-    if: ${{ needs.pages-changes.outputs.changed }}
+    if: ${{ needs.pages-changes.outputs.changed == 'true' }}
 
     steps:
       - uses: actions/checkout@v3
@@ -71,7 +71,7 @@ jobs:
   deploy-api:
     runs-on: ubuntu-latest
     needs: api-changes
-    if: ${{ needs.api-changes.outputs.changed }}
+    if: ${{ needs.api-changes.outputs.changed == 'true' }}
     defaults:
       run:
         shell: bash
