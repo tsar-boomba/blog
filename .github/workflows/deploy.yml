@@ -22,11 +22,11 @@ jobs:
           base: "master"
           filters: |
             src: './**'
-            not-api: '!./api/**''
-            not-license: '!./LICENSE*'
-            not-readme: '!./**/README*''
-            not-vscode: '!./.vscode/**''
-            not-gitignore: '!./.gitignore'
+            not-api: '!api/**'
+            not-license: '!LICENSE*'
+            not-readme: '!**/README*'
+            not-vscode: '!.vscode/**'
+            not-gitignore: '!.gitignore'
 
   build-pages:
     runs-on: ubuntu-latest
@@ -66,8 +66,8 @@ jobs:
         with:
           base: "master"
           filters: |
-            src:
-              - api/**
+            src: api/**
+            actions: .github/**
 
   deploy-api:
     runs-on: ubuntu-latest
