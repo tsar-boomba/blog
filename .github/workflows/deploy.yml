@@ -37,6 +37,7 @@ jobs:
     outputs:
       changed: ${{ steps.changes.outputs.changed }}
     steps:
+      - uses: actions/checkout@v3
       - name: Changes
         id: changes
         uses: dorny/paths-filter@v2
