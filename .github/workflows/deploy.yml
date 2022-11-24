@@ -23,10 +23,10 @@ jobs:
           filters: |
             src: './**'
             not-api: '!api/**''
-            not-license: '!LICENSE.txt'
+            not-license: '!./LICENSE*'
             not-readme: '!**/README*''
             not-vscode: '!.vscode/**''
-            not-gitignore: '!.gitignore'
+            not-gitignore: '!./.gitignore'
 
   build-pages:
     runs-on: ubuntu-latest
