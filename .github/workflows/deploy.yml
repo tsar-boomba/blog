@@ -35,7 +35,7 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      changed: ${{ steps.changes.outputs.changed }}
+      changed: ${{ steps.changes.outputs.changed == 'true' }}
     steps:
       - uses: actions/checkout@v3
       - name: Changes
