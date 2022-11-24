@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      changed: ${{ steps.changes.outputs.not-api && steps.changes.outputs.not-license && steps.changes.outputs.not-readme && steps.changes.outputs.not-vscode && steps.changes.outputs.not-gitignore }}
+      changed: ${{ steps.changes.outputs.ignore }}
     steps:
       - uses: actions/checkout@v3
       - name: Changes
@@ -20,13 +20,9 @@ jobs:
         uses: dorny/paths-filter@v2
         with:
           base: "master"
+          # if a filter is false, it means that the only change matched it, so do not deploy
           filters: |
-            src: './**'
-            not-api: '!api/**'
-            not-license: '!LICENSE*'
-            not-readme: '!**/README*'
-            not-vscode: '!.vscode/**'
-            not-gitignore: '!.gitignore'
+            ignore: '!(api/**|LICENSE*|**/README*|.vscode/**|.gitignore)'
 
   build-pages:
     runs-on: ubuntu-latest
