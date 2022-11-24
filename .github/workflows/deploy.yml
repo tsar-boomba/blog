@@ -12,7 +12,14 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      changed: ${{ steps.changes.outputs.changed == 'true' }}
+      changed: 
+        - ${{
+          steps.changes.outputs.not-api ||
+          steps.changes.outputs.not-license ||
+          steps.changes.outputs.not-readme ||
+          steps.changes.outputs.not-vscode ||
+          steps.changes.outputs.not-gitignore
+        }}
     steps:
       - uses: actions/checkout@v3
       - name: Changes
@@ -57,7 +64,7 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      changed: ${{ steps.changes.outputs.changed == 'true' }}
+      changed: ${{ steps.changes.outputs.src || steps.changes.outputs.actions }}
     steps:
       - uses: actions/checkout@v3
       - name: Changes
