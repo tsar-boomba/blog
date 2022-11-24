@@ -7,24 +7,18 @@ publishDate: '22 November 2022'
 editDate: '(optional) Date this post was last edited'
 ---
 
-import Code from '@/components/Code/Code.astro';
-
 # Getting started with an example
 
-<Code
-	code={`
+```ts
 console.log('ur mom');
 type sus = {};
 const amogus = 123;
 // comment
 const func = (param: string) => {};
 function func2(param: number) {}
-`}
-	lang='ts'
-/>
+```
 
-<Code
-	code={`
+```rs file=src/main.rs
 fn main() {
 	let variable: i32 = 1;
 
@@ -39,9 +33,12 @@ fn main() {
 		}
 	}
 }
-`}
-fileName='src/main.rs'
-lang='rs'
-/>
+```
+
+```rust file=src/main.rs
+fn main() {
+	let sus = "baka";
+}
+```
 
 This is some text for my paragraph. Yes I love Rust language it is really cool, but I also like TypeScript, so how can i use them otether?

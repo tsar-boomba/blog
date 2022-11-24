@@ -11,8 +11,9 @@
 		"astro": "astro"
 	},
 	"devDependencies": {
-		"@astrojs/mdx": "^0.11.6",
+		"@astrojs/mdx": "0.11.6",
 		"@astrojs/sitemap": "1.0.0",
+		"@types/mdast": "3.0.10",
 		"@typescript-eslint/eslint-plugin": "5.42.0",
 		"@typescript-eslint/parser": "5.42.0",
 		"astro": "1.6.10",
@@ -25,11 +26,14 @@
 		"eslint-plugin-astro": "0.21.0",
 		"eslint-plugin-jsx-a11y": "6.6.1",
 		"eslint-plugin-prettier": "4.2.1",
+		"mdast": "3.0.0",
 		"postcss-preset-env": "7.8.2",
 		"prettier": "2.7.1",
 		"sass": "1.55.0",
 		"shiki": "0.11.1",
-		"svgo": "2.8.0"
+		"svgo": "2.8.0",
+		"unified": "10.1.2",
+		"unist-util-visit": "^4.1.1"
 	},
 	"dependencies": {
 		"astro-icon": "0.8.0"

@@ -1,8 +1,9 @@
 lockfileVersion: 5.4
 
 specifiers:
-  '@astrojs/mdx': ^0.11.6
+  '@astrojs/mdx': 0.11.6
   '@astrojs/sitemap': 1.0.0
+  '@types/mdast': 3.0.10
   '@typescript-eslint/eslint-plugin': 5.42.0
   '@typescript-eslint/parser': 5.42.0
   astro: 1.6.10
@@ -16,11 +17,14 @@ specifiers:
   eslint-plugin-astro: 0.21.0
   eslint-plugin-jsx-a11y: 6.6.1
   eslint-plugin-prettier: 4.2.1
+  mdast: 3.0.0
   postcss-preset-env: 7.8.2
   prettier: 2.7.1
   sass: 1.55.0
   shiki: 0.11.1
   svgo: 2.8.0
+  unified: 10.1.2
+  unist-util-visit: ^4.1.1
 
 dependencies:
   astro-icon: 0.8.0
@@ -28,6 +32,7 @@ dependencies:
 devDependencies:
   '@astrojs/mdx': 0.11.6
   '@astrojs/sitemap': 1.0.0
+  '@types/mdast': 3.0.10
   '@typescript-eslint/eslint-plugin': 5.42.0_5aea5dp4n23mfv4y2mmjxole3e
   '@typescript-eslint/parser': 5.42.0_eslint@8.26.0
   astro: 1.6.10_sass@1.55.0
@@ -40,11 +45,14 @@ devDependencies:
   eslint-plugin-astro: 0.21.0_eslint@8.26.0
   eslint-plugin-jsx-a11y: 6.6.1_eslint@8.26.0
   eslint-plugin-prettier: 4.2.1_aniwkeyvlpmwkidetuytnokvcm
+  mdast: 3.0.0
   postcss-preset-env: 7.8.2
   prettier: 2.7.1
   sass: 1.55.0
   shiki: 0.11.1
   svgo: 2.8.0
+  unified: 10.1.2
+  unist-util-visit: 4.1.1
 
 packages:
 
@@ -3866,6 +3874,11 @@ packages:
 
   /mdast-util-to-string/3.1.0:
     resolution: {integrity: sha512-n4Vypz/DZgwo0iMHLQL49dJzlp7YtAJP+N07MZHpjPf/5XJuHUWstviF4Mn2jEiR/GNmtnRRqnwsXExk3igfFA==}
+    dev: true
+
+  /mdast/3.0.0:
+    resolution: {integrity: sha512-xySmf8g4fPKMeC07jXGz971EkLbWAJ83s4US2Tj9lEdnZ142UP5grN73H1Xd3HzrdbU5o9GYYP/y8F9ZSwLE9g==}
+    deprecated: '`mdast` was renamed to `remark`'
     dev: true
 
   /mdn-data/2.0.14:
