@@ -14,9 +14,10 @@ module.exports = {
 		'plugin:@typescript-eslint/eslint-recommended',
 		'plugin:@typescript-eslint/recommended',
 		'plugin:prettier/recommended',
+		'plugin:mdx/recommended',
 		'prettier',
 	],
-	plugins: ['@typescript-eslint', 'prettier'],
+	plugins: ['@typescript-eslint', 'prettier', 'mdx'],
 	rules: {
 		'react/display-name': 'off',
 		'@typescript-eslint/no-explicit-any': 'off',
@@ -70,6 +71,9 @@ module.exports = {
 				// "astro/no-set-html-directive": "error"
 			},
 		},
-		// ...
+		{
+			files: ['*.mdx'],
+			parser: 'eslint-mdx',
+		},
 	],
 };

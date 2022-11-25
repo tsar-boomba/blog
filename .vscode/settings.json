@@ -1,0 +1,8 @@
+{
+	"files.associations": {
+		"*.mdx": "markdown"
+	},
+	"markdownlint.config": {
+		"hard_tab": false
+	}
+}

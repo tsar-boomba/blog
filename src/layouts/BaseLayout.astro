@@ -16,7 +16,7 @@ export interface Props {
 const { title, description, noHeader, noFooter } = Astro.props as Props;
 ---
 
-<html data-theme='dark' data-tab-size="4" lang='en'>
+<html data-theme='dark' data-indentSize='4' lang='en'>
 	<head>
 		<meta charset='utf-8' />
 		<meta name='generator' content={Astro.generator} />
@@ -32,31 +32,49 @@ const { title, description, noHeader, noFooter } = Astro.props as Props;
 
 		<script is:inline>
 			// this exists to stop theme from flashing by setting it before css is evaluated
-			;(function () {
-				var theme;
-				var storedTheme = localStorage.getItem('theme');
+			(function () {
+				var html = document.querySelector('html');
+				var indentSize = localStorage.getItem('indentSize');
+				var theme = localStorage.getItem('theme');
 
-				if (storedTheme) {
-					theme = storedTheme;
-				} else {
+				if (!theme) {
 					theme = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
 				}
 
-				document.querySelector('html').dataset.theme = theme;
+				if (!indentSize) {
+					indentSize = '4';
+				}
+
+				html.style.tabSize = indentSize;
+				html.dataset.indentsize = indentSize;
+				html.dataset.theme = theme;
 			})();
 		</script>
 		<script>
 			// setup mutation observer to fire event whenever theme changes
 			const observer = new MutationObserver((list) => {
 				const mutation = list[0];
-				if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
-					window.dispatchEvent(
-						new CustomEvent('themeChange', {
-							detail: {
-								newTheme: (mutation.target as HTMLHtmlElement).dataset.theme,
-							},
-						}),
-					);
+				if (mutation.type === 'attributes') {
+					if (mutation.attributeName === 'data-theme') {
+						window.dispatchEvent(
+							new CustomEvent('themeChange', {
+								detail: {
+									newTheme: (mutation.target as HTMLHtmlElement).dataset.theme,
+								},
+							}),
+						);
+					}
+					if (mutation.attributeName === 'data-indentsize') {
+						window.dispatchEvent(
+							new CustomEvent('indentChange', {
+								detail: {
+									newIndent: (mutation.target as HTMLHtmlElement).dataset[
+										'indent-size'
+									],
+								},
+							}),
+						);
+					}
 				}
 			});
 			observer.observe(document.querySelector('html')!, {

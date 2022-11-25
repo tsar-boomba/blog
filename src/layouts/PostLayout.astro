@@ -1,6 +1,7 @@
 ---
 import Box from '@/components/Box.astro';
 import Group from '@/components/Group.astro';
+import IndentSelect from '@/components/IndentSelect/IndentSelect.astro';
 import type SimpleGrid from '@/components/SimpleGrid.astro';
 import Stack from '@/components/Stack.astro';
 import type { PostFrontmatter } from '@/utils/types';
@@ -36,6 +37,10 @@ const { frontmatter } = Astro.props as Props;
 	}
 
 	.article-container {
+	}
+
+	.article {
+		position: relative;
 	}
 
 	.shiki {
@@ -79,9 +84,12 @@ const { frontmatter } = Astro.props as Props;
 	description={frontmatter.summary}
 	metas={[{ name: 'author', content: frontmatter.author }]}
 >
-	<Box class='.article-container'>
-		<Box component='article' mxw={1200} ml='auto' mr='auto'>
+	<Box class='article-container'>
+		<Box component='article' class='article' mxw={1200} ml='auto' mr='auto'>
+			<Box component='h1'>{frontmatter.title}</Box>
+			<Box component='p'>{frontmatter.summary}</Box>
 			<slot />
+			<IndentSelect />
 		</Box>
 	</Box>
 </BaseLayout>

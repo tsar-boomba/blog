@@ -1,0 +1,50 @@
+---
+---
+
+<style lang='scss'>
+	.label {
+		position: sticky;
+		bottom: 16px;
+		left: 100%;
+		border-radius: var(--radius);
+		padding: var(--spacing-sm) var(--spacing-md);
+		font-size: 1.25rem;
+		font-weight: 600;
+		color: var(--text-color);
+		background-color: rgb(var(--primary-200));
+		border: 2px solid rgb(var(--primary-300));
+		box-sizing: border-box;
+	}
+
+	#indent-select {
+		font-size: 1.125rem;
+		color: var(--text-color);
+		background-color: rgb(var(--primary-200));
+		border: 0;
+
+		& > option {
+			color: var(--text-color);
+			background-color: var(--bg-color-to);
+		}
+	}
+</style>
+<label class='label' for='indent-select'>
+	Indent Size:
+	<select aria-label='Code Indent' id='indent-select'>
+		<option value='2'>2</option>
+		<option value='4'>4</option>
+		<option value='6'>6</option>
+		<option value='8'>8</option>
+	</select>
+</label>
+<script is:inline>
+	function onIndentChange(e) {
+		var html = document.querySelector('html');
+		html.dataset.indentsize = e.target.value;
+		html.style.tabSize = e.target.value;
+		localStorage.setItem('indentSize', e.target.value);
+	}
+	document.getElementById('indent-select').value =
+		document.querySelector('html').dataset.indentsize;
+	document.getElementById('indent-select').onchange = onIndentChange;
+</script>
