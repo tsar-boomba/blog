@@ -41,9 +41,11 @@ export const remarkCustomCodeBlock: () => Promise<Plugin<any[], Root>> = async (
 			const langColorMap: { [K in Lang]?: { bg: string; fg: string } } = {
 				css: { bg: '#264de4', fg: '#fff' },
 				ts: { bg: '#007acc', fg: '#fff' },
+				tsx: { bg: '#007acc', fg: '#fff' },
 				java: { bg: '#ed8b00', fg: '#fff' },
 				rust: { bg: '#dea584', fg: '#fff' },
 				astro: { bg: '#ff5a03', fg: '#fff' },
+				toml: { bg: '#9c4221', fg: '#fff' },
 			};
 
 			const lang: Lang = (() => {
@@ -64,10 +66,12 @@ export const remarkCustomCodeBlock: () => Promise<Plugin<any[], Root>> = async (
 					${file ? `<div class='code-file-name'>${file}</div>` : ''}
 					<div style='position:relative'>
 					${
-						lang in langColorMap && !noBadge
+						!noBadge
 							? `<div
 							class='language-badge'
-							style='background-color:${langColorMap[lang]?.bg};color:${langColorMap[lang]?.fg}'
+							style='background-color:${langColorMap[lang]?.bg ?? '#888'};color:${
+									langColorMap[lang]?.fg ?? '#fff'
+							  }'
 						>
 							${lang.toUpperCase()}
 						</div>`

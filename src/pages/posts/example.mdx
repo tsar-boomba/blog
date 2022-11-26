@@ -9,13 +9,16 @@ editDate: '(optional) Date this post was last edited'
 
 ## Getting Started
 
-```ts
+```tsx
 console.log('ur mom');
 type sus = {};
 const amogus = 123;
 // comment
 const func = (param: string) => {};
 function func2(param: number) {}
+const Component = () => {
+	return <div></div>;
+};
 ```
 
 ```rs file=src/main.rs
@@ -39,6 +42,22 @@ fn main() {
 fn main() {
 	let sus = "baka";
 }
+```
+
+```toml file=Cargo.toml
+[package]
+name = "api"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[lib]
+
+[dependencies]
+shuttle-service = { version = "0.7.2", features = ["web-axum"] }
+axum = "0.5.17"
+sync_wrapper = "0.1.1"
+
 ```
 
 This is some text for my paragraph. Yes I love Rust language it is really cool, but I also like TypeScript, so how can i use them together?

@@ -1,9 +1,6 @@
 ---
 import Box from '@/components/Box.astro';
-import Group from '@/components/Group.astro';
 import IndentSelect from '@/components/IndentSelect/IndentSelect.astro';
-import type SimpleGrid from '@/components/SimpleGrid.astro';
-import Stack from '@/components/Stack.astro';
 import type { PostFrontmatter } from '@/utils/types';
 import BaseLayout from './BaseLayout.astro';
 
@@ -73,6 +70,7 @@ const { frontmatter } = Astro.props as Props;
 	.code-file-name {
 		background-color: var(--shiki-color-background);
 		width: fit-content;
+		font-size: 1.25rem;
 		padding: 4px 16px;
 		border-top-right-radius: var(--radius);
 		border-top-left-radius: var(--radius);
