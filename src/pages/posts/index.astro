@@ -1,4 +1,5 @@
 ---
+import Box from '@/components/Box.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import type { PostFrontmatter } from '@/utils/types';
 
@@ -8,8 +9,12 @@ const posts = await Astro.glob<PostFrontmatter>('./*.mdx');
 <BaseLayout title='Isaiah Gamble Blog | Posts' description="Posts on Isaiah Gamble's blog.">
 	<h1>Posts</h1>
 	{
-		posts
-			.filter(({ frontmatter }) => frontmatter.title !== 'Example')
-			.map((post) => <h2>{post.frontmatter.title}</h2>)
+		posts.length > 1 ? (
+			posts
+				.filter(({ frontmatter }) => frontmatter.title !== 'Example')
+				.map((post) => <h2>{post.frontmatter.title}</h2>)
+		) : (
+			<Box fz={64}>Coming Soon</Box>
+		)
 	}
 </BaseLayout>
