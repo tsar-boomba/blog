@@ -28,8 +28,8 @@ html[data-theme='light'] {
 	--primary-1200: #{utils.hexToRGB(#005ca7)};
 
 	// For code highlighting
-	--shiki-color-text: #270158;
-	--shiki-color-background: #feffce;
+	--shiki-foreground: #270158;
+	--shiki-background: #feffce;
 	--shiki-token-constant: #0092fa;
 	--shiki-token-string: #770000;
 	--shiki-token-comment: #880000;
@@ -61,15 +61,15 @@ html[data-theme='dark'] {
 	--primary-1200: #{utils.hexToRGB(#00199b)};
 
 	// For code highlighting
-	--shiki-color-text: #ffffff;
-	--shiki-color-background: #11091c;
+	--shiki-foreground: #ffffff;
+	--shiki-background: #0b0613;
 	--shiki-token-constant: #fbaaaa;
 	--shiki-token-string: #770000;
-	--shiki-token-comment: #FD971F;
+	--shiki-token-comment: #fd971f;
 	--shiki-token-keyword: #00e5ff;
-	--shiki-token-parameter: #FD971F;
-	--shiki-token-function: #A6E22E;
-	--shiki-token-string-expression: #E6DB74;
+	--shiki-token-parameter: #fd971f;
+	--shiki-token-function: #a6e22e;
+	--shiki-token-string-expression: #e6db74;
 	--shiki-token-punctuation: #dd0000;
 	--shiki-token-link: #ee0000;
 }

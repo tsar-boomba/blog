@@ -68,7 +68,7 @@ const { frontmatter } = Astro.props as Props;
 	}
 
 	.code-file-name {
-		background-color: var(--shiki-color-background);
+		background-color: var(--shiki-background);
 		width: fit-content;
 		font-size: 1.25rem;
 		padding: 4px 16px;
@@ -91,3 +91,17 @@ const { frontmatter } = Astro.props as Props;
 		</Box>
 	</Box>
 </BaseLayout>
+<script is:inline>
+	(() => {
+		var alphanumeric = /^\s*[a-zA-Z][a-zA-Z0-9]*$/;
+		document.querySelectorAll('span').forEach((span) => {
+			if (
+				span.style.color === 'var(--shiki-token-keyword)' &&
+				span.textContent !== null &&
+				alphanumeric.test(span.textContent)
+			) {
+				span.style.fontStyle = 'italic';
+			}
+		});
+	})();
+</script>

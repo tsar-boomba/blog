@@ -1,12 +1,16 @@
 ---
-import type { StyleProps } from '@/utils/handleStyleProps';
+import { handleStyleProps, type StyleProps } from '@/utils/handleStyleProps';
 import Box from './Box.astro';
 
 interface Props extends StyleProps {
 	component?: keyof HTMLElementTagNameMap;
 }
+
+const props = Astro.props as Props;
+const styles = { ...props.style, ...handleStyleProps(props) };
+
 ---
 
-<Box {...Astro.props} component={Astro.props.component || 'section'}>
+<Box style={styles} class={props.class} {...props} component={Astro.props.component || 'section'}>
 	<slot />
 </Box>

@@ -5,9 +5,12 @@ export interface Props {
 }
 
 const { href, label } = Astro.props as Props;
-const isActive = Astro.url.pathname === href || Astro.url.pathname.slice(undefined, -1) === href;
+const isActive =
+	(href !== '/' && Astro.url.pathname.startsWith(href)) ||
+	(href === '/' && Astro.url.pathname === '/');
 ---
-<style lang="scss">
+
+<style lang='scss'>
 	.root {
 		padding: var(--spacing-md) var(--spacing-xl);
 		font-weight: 500;
@@ -28,4 +31,4 @@ const isActive = Astro.url.pathname === href || Astro.url.pathname.slice(undefin
 		}
 	}
 </style>
-<a data-active={isActive} href={href} class="root">{label}</a>
+<a data-active={isActive} href={href} class='root'>{label}</a>
