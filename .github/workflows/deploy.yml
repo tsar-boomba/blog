@@ -14,7 +14,7 @@ jobs:
     outputs:
       changed: ${{ contains(steps.changes.outputs.changes, 'not-api') && contains(steps.changes.outputs.changes, 'not-license') && contains(steps.changes.outputs.changes, 'not-readme') && contains(steps.changes.outputs.changes, 'not-vscode') }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Changes
         id: changes
         uses: dorny/paths-filter@v2
@@ -33,7 +33,7 @@ jobs:
     if: ${{ needs.pages-changes.outputs.changed == 'true' }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v2.2.2
         with:
           version: 8.15.3
@@ -58,7 +58,7 @@ jobs:
     outputs:
       changed: ${{ contains(steps.changes.outputs.changes, 'src') || contains(steps.changes.outputs.changes, 'actions') }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Changes
         id: changes
         uses: dorny/paths-filter@v2
@@ -78,7 +78,7 @@ jobs:
         working-directory: api
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
         with:
