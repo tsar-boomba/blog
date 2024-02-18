@@ -71,7 +71,7 @@ jobs:
   deploy-api:
     runs-on: ubuntu-latest
     needs: api-changes
-    if: ${{ needs.api-changes.outputs.changed == 'true' }}
+    if: ${{ needs.api-changes.outputs.changed == 'true' && false }}
     defaults:
       run:
         shell: bash
