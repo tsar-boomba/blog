@@ -1,23 +1,40 @@
 ---
 import Box from '@/components/Box.astro';
+import Card from '@/components/Card.astro';
+import Group from '@/components/Group.astro';
+import Stack from '@/components/Stack.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import type { PostFrontmatter } from '@/utils/types';
 
 const posts = await Astro.glob<PostFrontmatter>('./**/*.mdx');
 ---
 
-<style lang='scss'>
-	
-</style>
+<style lang='scss'></style>
 <BaseLayout title='Isaiah Gamble Blog | Posts' description="Posts on Isaiah Gamble's blog.">
 	<h1>Posts</h1>
-	{
-		posts.length > 1 ? (
-			posts
-				.filter(({ frontmatter }) => frontmatter.title !== 'Example')
-				.map((post) => <a href={post.url}>{post.frontmatter.title}</a>)
-		) : (
-			<Box fz={64}>Coming Soon</Box>
-		)
-	}
+	<Group gap='1rem' justify='center' align='center'
+		>{
+			posts.length > 1 ? (
+				posts
+					.filter(({ frontmatter }) => frontmatter.title !== 'Example')
+					.map((post) => (
+						<Card
+							as='a'
+							href={post.url}
+							p='1rem'
+							mxw={300}
+							shade={500}
+							style={{ cursor: 'pointer', textDecoration: 'none', flexGrow: 1 }}
+						>
+							<h2 style='margin:0'>{post.frontmatter.title}</h2>
+							<p style='margin:0;line-height:normal;font-size:0.9rem;'>
+								{post.frontmatter.summary}
+							</p>
+						</Card>
+					))
+			) : (
+				<Card fz={64}>Coming Soon</Card>
+			)
+		}</Group
+	>
 </BaseLayout>

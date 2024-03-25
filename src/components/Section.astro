@@ -1,16 +1,14 @@
 ---
 import { handleStyleProps, type StyleProps } from '@/utils/handleStyleProps';
 import Box from './Box.astro';
+import type { HTMLTag, Polymorphic } from 'astro/types';
 
-interface Props extends StyleProps {
-	component?: keyof HTMLElementTagNameMap;
-}
+type Props<Tag extends HTMLTag> = Polymorphic<{ as: Tag }> & StyleProps;
 
-const props = Astro.props as Props;
-const styles = { ...props.style, ...handleStyleProps(props) };
-
+const { class: className, style: ogStyle, ...props } = Astro.props;
+let styles = { ...ogStyle, ...handleStyleProps(props) };
 ---
 
-<Box style={styles} class={props.class} {...props} component={Astro.props.component || 'section'}>
+<Box {...props} style={styles} class={props.class} as={props.as || 'section'}>
 	<slot />
 </Box>

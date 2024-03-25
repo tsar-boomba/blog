@@ -116,24 +116,24 @@ const { frontmatter } = Astro.props as Props;
 	]}
 >
 	<Box class='article-container'>
-		<Box component='article' class='article' mxw={1200} ml='auto' mr='auto'>
-			<Box component='h1' m={0}>{frontmatter.title}</Box>
-			<Box component='p' m={0}>
-				Published: <Box component='span' class='publish-date'>
+		<Box as='article' class='article' mxw={1200} ml='auto' mr='auto'>
+			<Box as='h1' m={0}>{frontmatter.title}</Box>
+			<Box as='p' m={0}>
+				Published: <Box as='span' class='publish-date'>
 					{frontmatter.publishDate}
 				</Box>
 			</Box>
 			{
 				frontmatter.editDate && (
-					<Box component='p' m={0}>
+					<Box as='p' m={0}>
 						Last Edited:{' '}
-						<Box component='span' class='publish-date'>
+						<Box as='span' class='publish-date'>
 							{frontmatter.editDate}
 						</Box>
 					</Box>
 				)
 			}
-			<Box component='p' mb='0px' mb='1rem'>{frontmatter.summary}</Box>
+			<Box as='p' mb='0px' mb='1rem'>{frontmatter.summary}</Box>
 			<div style={{ borderTop: '2px solid rgb(var(--primary-800))', marginBottom: '1rem' }}>
 			</div>
 			<slot />
