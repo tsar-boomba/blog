@@ -1,18 +1,18 @@
 ---
 import { handleStyleProps, resolveUnit, StyleProps } from '@/utils/handleStyleProps';
+import type { HTMLTag, Polymorphic } from 'astro/types';
 
-interface Props extends StyleProps {
+type Props<Tag extends HTMLTag> = Polymorphic<{ as: Tag }> & {
 	align?: 'center' | 'flex-start' | 'flex-end';
 	justify?: 'center' | 'flex-start' | 'flex-end';
 	gap?: string | number;
-	style?: Record<string, any>;
 	component?: keyof HTMLElementTagNameMap;
 	direction?: 'row' | 'column';
 	noWrap?: boolean;
-}
-const props = Astro.props as Props;
-const Element = props.component || 'div';
-let styles = { ...props.style, ...handleStyleProps(props) };
+} & StyleProps;
+
+const { as: Tag = 'div', class: className, style: ogStyle, ...props } = Astro.props;
+let styles = { ...ogStyle, ...handleStyleProps(props) };
 
 if (props.align) {
 	styles.alignItems = props.align;
@@ -34,10 +34,11 @@ if (props.gap) {
 	styles.gap = resolveUnit(props.gap);
 }
 ---
-<style lang="scss">
+
+<style lang='scss'>
 	.root {
 		display: flex;
 		flex-flow: wrap;
 	}
 </style>
-<Element style={styles} class="root"><slot /></Element>
+<Tag {...props} style={styles} class:list={['root', className]}><slot /></Tag>

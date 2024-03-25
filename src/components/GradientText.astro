@@ -1,17 +1,13 @@
 ---
 import { handleStyleProps, StyleProps } from '@/utils/handleStyleProps';
+import type { HTMLTag, Polymorphic } from 'astro/types';
 
-interface Props extends StyleProps {
-	style?: Record<string, any>;
-	component?: keyof HTMLElementTagNameMap;
-	gradient?: string;
-}
+type Props<Tag extends HTMLTag> = Polymorphic<{ as: Tag }> & { gradient: string } & StyleProps;
 
-const props = Astro.props as Props;
-const Element = props.component || 'span';
+const { as: Tag = 'div', class: className, style: ogStyle, ...props } = Astro.props;
 const styles = {
 	backgroundImage: props.gradient,
-	...props.style,
+	...ogStyle,
 	...handleStyleProps(props),
 };
 ---
@@ -29,6 +25,6 @@ const styles = {
 		);
 	}
 </style>
-<Element {...props} style={styles} class='root'>
+<Tag {...props} style={styles} class:list={['root', className]}>
 	<slot />
-</Element>
+</Tag>
