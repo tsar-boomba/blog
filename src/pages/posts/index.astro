@@ -3,16 +3,19 @@ import Box from '@/components/Box.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import type { PostFrontmatter } from '@/utils/types';
 
-const posts = await Astro.glob<PostFrontmatter>('./*.mdx');
+const posts = await Astro.glob<PostFrontmatter>('./**/*.mdx');
 ---
 
+<style lang='scss'>
+	
+</style>
 <BaseLayout title='Isaiah Gamble Blog | Posts' description="Posts on Isaiah Gamble's blog.">
 	<h1>Posts</h1>
 	{
 		posts.length > 1 ? (
 			posts
 				.filter(({ frontmatter }) => frontmatter.title !== 'Example')
-				.map((post) => <h2>{post.frontmatter.title}</h2>)
+				.map((post) => <a href={post.url}>{post.frontmatter.title}</a>)
 		) : (
 			<Box fz={64}>Coming Soon</Box>
 		)

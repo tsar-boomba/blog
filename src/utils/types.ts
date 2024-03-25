@@ -3,6 +3,7 @@ export type PostFrontmatter = {
 	summary: string;
 	author: string;
 	publishDate: string;
+	tags: string[];
 	editDate?: string;
 };
 

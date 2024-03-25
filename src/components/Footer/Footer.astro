@@ -1,26 +1,38 @@
 ---
+
 ---
-<style lang="scss">
-	$water1: #0000de;
-	$water2: #0000af;
-	$cookie: #996900;
+
+<style lang='scss'>
+	:root[data-theme='dark'] {
+		--footer-from-color: #00004b;
+		--footer-mid-color: #000032;
+		--footer-to-color: #000025;
+	}
+
+	:root[data-theme='light'] {
+		--footer-from-color: #018342;
+		--footer-mid-color: #00763b;
+		--footer-to-color: #016b01;
+	}
 
 	footer {
 		padding: var(--spacing-md);
 		padding-top: 48px;
 		display: flex;
-		background-color: $water2;
-
-		:root[data-theme="light"] & {
-			background-color: $cookie;
-			color: white;
-		}
+		color: white;
+		background-color: var(--footer-to-color);
+		background: linear-gradient(
+			180deg,
+			var(--footer-mid-color) 10%,
+			var(--footer-to-color) 100%
+		);
 	}
 
 	.curve {
 		position: relative;
 		overflow: visible;
 		margin-top: calc(10vh + 128px);
+		margin-bottom: -1px;
 
 		&::before {
 			content: '';
@@ -35,25 +47,19 @@
 			line-height: 0;
 			min-height: 10vh;
 			width: 100%;
+			background-color: var(--footer-to-color);
+			background: linear-gradient(
+				180deg,
+				var(--footer-from-color) 25%,
+				var(--footer-mid-color) 90%
+			);
 		}
 
-
-		:root[data-theme="light"] &::before {
-			background-color: $cookie;
-		}
-
-		:root[data-theme="dark"] & {
-			clip-path: inset(-100vh 0px 0px 0px); // cut off al borders except top
-			box-shadow: 0px 0vh 20vh 4vh rgba(255, 255, 255, 0.8);
-
-			&::before {
-				background-color: $water2;
-				background: linear-gradient(180deg, $water1 40%, $water2 90%);
-			}
-		}
+		clip-path: inset(-100vh 0px 0px 0px); // cut off al borders except top
+		box-shadow: 0px 0vh 20vh 2vh rgba(255, 255, 255, 0.7);
 	}
 </style>
-<div class="curve"></div>
-<footer class=".root">
+<div class='curve'></div>
+<footer class='.root'>
 	<div>infromation</div>
 </footer>

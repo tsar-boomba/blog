@@ -22,3 +22,5 @@ pnpm-debug.log*
 # rust
 **/target/
 api/Secrets.toml
+
+**/.obsidian/

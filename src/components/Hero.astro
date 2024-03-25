@@ -1,12 +1,9 @@
 ---
-import Section from "./Section.astro";
-
+import Stack from './Stack.astro';
 ---
 
 <style lang='scss'>
 	$breakpoint: 700px;
-
-
 
 	.hero-title {
 		font-size: 64px;
@@ -55,7 +52,7 @@ import Section from "./Section.astro";
 		}
 	}
 </style>
-<Section p="6rem 0 12rem 0">
+<Stack p='6rem 0 12rem 0' align='center'>
 	<h1 class='hero-title'><span>Isaiah Gamble</span></h1>
-	<p class='hero-text'>A blog about development</p>
-</Section>
+	<p class='hero-text' style={{ textAlign: 'center' }}>A blog about development</p>
+</Stack>

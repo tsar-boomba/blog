@@ -1,9 +1,9 @@
 ---
-import ThemeSwitch from "../ThemeSwitch/ThemeSwitch.astro";
-import NavLink from "./NavLink.astro";
-
+import ThemeSwitch from '../ThemeSwitch/ThemeSwitch.astro';
+import NavLink from './NavLink.astro';
 ---
-<style lang="scss">
+
+<style lang='scss'>
 	$breakpoint: 600px;
 
 	.root {
@@ -15,9 +15,8 @@ import NavLink from "./NavLink.astro";
 		top: 0;
 		padding: 0 1rem;
 
-		background-color: rgba(0, 0, 0, 0.0);
+		background-color: var(--bg-color-from);
 		box-shadow: 0px 0px 8px 1px rgba(0, 0, 0, 0.3);
-		backdrop-filter: blur(5px);
 		z-index: 1;
 	}
 
@@ -64,18 +63,19 @@ import NavLink from "./NavLink.astro";
 			cursor: pointer;
 		}
 	}
-
 </style>
-<header class="root">
+<header class='root'>
 	<div>Isaiah Gamble</div>
-	<div class="toggle-wrapper">
-		<button id="nav-toggle" class="nav-toggle" aria-label="Toggle Navigation">
-			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M24 6h-24v-4h24v4zm0 4h-24v4h24v-4zm0 8h-24v4h24v-4z"/></svg>
+	<div class='toggle-wrapper'>
+		<button id='nav-toggle' class='nav-toggle' aria-label='Toggle Navigation'>
+			<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'
+				><path d='M24 6h-24v-4h24v4zm0 4h-24v4h24v-4zm0 8h-24v4h24v-4z'></path></svg
+			>
 		</button>
 	</div>
-	<nav id="nav" class="nav">
-		<NavLink href="/" label="Home" />
-		<NavLink href="/posts" label="Posts" />
+	<nav id='nav' class='nav'>
+		<NavLink href='/' label='Home' />
+		<NavLink href='/posts' label='Posts' />
 	</nav>
 	<ThemeSwitch />
 </header>
@@ -98,12 +98,18 @@ import NavLink from "./NavLink.astro";
 			const observer = new MutationObserver((list) => {
 				for (const mutation of list) {
 					if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
-						toggle.children[0].setAttribute('fill', html.dataset.theme === 'dark' ? 'white' : 'black');
+						toggle.children[0].setAttribute(
+							'fill',
+							html.dataset.theme === 'dark' ? 'white' : 'black',
+						);
 					}
 				}
 			});
 			observer.observe(html, { childList: false, attributes: true, subtree: false });
-			toggle.children[0].setAttribute('fill', html.dataset.theme === 'dark' ? 'white' : 'black');
+			toggle.children[0].setAttribute(
+				'fill',
+				html.dataset.theme === 'dark' ? 'white' : 'black',
+			);
 		};
 
 		// close menu if a click ocurred outside of it
@@ -126,5 +132,5 @@ import NavLink from "./NavLink.astro";
 		});
 
 		setupMenu(nav, toggle);
-	})()
+	})();
 </script>

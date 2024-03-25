@@ -24,20 +24,46 @@ const { frontmatter } = Astro.props as Props;
 		font-size: 2.5rem;
 	}
 
-	p {
+	a,
+	a:link,
+	a:visited {
+		color: var(--link-color);
+
+		&:hover {
+			color: var(--link-hovered-color);
+		}
+	}
+
+	p,
+	li {
 		font-size: 1.25rem;
 		line-height: 1.5;
 	}
 
-	span {
+	code > span {
 		font-size: 1.125rem;
 	}
 
+	code {
+		background-color: var(--shiki-background);
+		padding: 2px;
+		border-radius: var(--radius);
+		word-break: break-all;
+	}
+
 	.article-container {
+		margin-top: 1rem;
 	}
 
 	.article {
 		position: relative;
+		background-color: rgba(var(--article-background), 0.5);
+		padding: 1rem;
+		border-radius: var(--radius);
+	}
+
+	.publish-date {
+		color: var(--dimmed-text-color);
 	}
 
 	.shiki {
@@ -45,6 +71,10 @@ const { frontmatter } = Astro.props as Props;
 		padding: 16px;
 		border-radius: var(--radius);
 		margin: 0;
+		box-shadow:
+			0 0rem 0rem rgba(0, 0, 0, 0.05),
+			rgba(0, 0, 0, 0.05) 0 1.25rem 1.5625rem -0.3125rem,
+			rgba(0, 0, 0, 0.04) 0 0.625rem 0.625rem -0.3125rem;
 	}
 
 	.shiki-with-file-name {
@@ -80,12 +110,32 @@ const { frontmatter } = Astro.props as Props;
 <BaseLayout
 	title={frontmatter.title}
 	description={frontmatter.summary}
-	metas={[{ name: 'author', content: frontmatter.author }]}
+	metas={[
+		{ name: 'author', content: frontmatter.author },
+		{ name: 'keywords', content: ['Programming', ...frontmatter.tags].join(', ') },
+	]}
 >
 	<Box class='article-container'>
 		<Box component='article' class='article' mxw={1200} ml='auto' mr='auto'>
-			<Box component='h1'>{frontmatter.title}</Box>
-			<Box component='p'>{frontmatter.summary}</Box>
+			<Box component='h1' m={0}>{frontmatter.title}</Box>
+			<Box component='p' m={0}>
+				Published: <Box component='span' class='publish-date'>
+					{frontmatter.publishDate}
+				</Box>
+			</Box>
+			{
+				frontmatter.editDate && (
+					<Box component='p' m={0}>
+						Last Edited:{' '}
+						<Box component='span' class='publish-date'>
+							{frontmatter.editDate}
+						</Box>
+					</Box>
+				)
+			}
+			<Box component='p' mb='0px' mb='1rem'>{frontmatter.summary}</Box>
+			<div style={{ borderTop: '2px solid rgb(var(--primary-800))', marginBottom: '1rem' }}>
+			</div>
 			<slot />
 			<IndentSelect />
 		</Box>

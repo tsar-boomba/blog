@@ -1,0 +1,180 @@
+---
+layout: "@/layouts/PostLayout.astro"
+title: Building A Spotify Service
+summary: Building a service for accessing personal spotify data with Rust
+author: Isaiah Gamble
+publishDate: 22 November 2022
+tags:
+  - Rust
+editDate: ""
+---
+## Background
+I've recently felt like procrastinating on my schoolwork. That means its time to update my portfolio. This is the first time I'm updating it since probably October 2023 when I was applying to summer 2024 internships. This time I wanted to go above and beyond, so I decided to add Spotify integration to my site.
+
+When I first started programming back in summer of 2021, I followed [a tutorial for using Spotify's API](https://leerob.io/blog/spotify-api-nextjs) by Lee Robinson of Vercel fame. By his example, I made a little site that showed my top tracks and my currently playing song. Now, almost 3 years later, I used the same tutorial because I only want to authenticate with my Spotify account, and I remember that's the approach he used.
+
+I wanted to be able to display my top tracks on my site as well as what I'm currently listening to, just like before. The issue is that my portfolio is hosted statically with GitHub Pages, so I couldn't use Next.js's API routes to interact with the Spotify API. To solve this, I decided to use a AWS Lambda Function written in Rust. You can find the code for this [on my repository](https://github.com/tsar-boomba/spotify-me)
+## The Function
+To get started, I downloaded [`cargo-lambda`](https://www.cargo-lambda.info/) then ran `cargo new` to start up my rust project. The main dependency needed for this function is `rspotify`, a client library for using Spotify's API. It works with the tokio async runtime as well as without an async runtime.
+
+Before we can start making requests to the Spotify API, I needed to obtain a refresh token for my account. To do this, I recommend following Lee Robinson's tutorial linked above.
+## Using The Refresh Token
+The largest challenge with taking the refresh token approach to authentication, was figuring out how to make it work with `rspotify`'s API. Luckily, it exposes a method for creating an `AuthCodeSpotify` client from a token.
+
+```rust file=src/main.rs
+let mut spotify = AuthCodeSpotify::from_token(Token {
+	refresh_token: Some(std::env::var("REFRESH_TOKEN").unwrap()),
+	scopes: scopes!(
+		"user-read-currently-playing",
+		"user-read-recently-played",
+		"user-top-read",
+		"user-read-playback-position",
+		"user-read-playback-state"
+	),
+	..Default::default()
+});
+
+// Creates a Credentials struct with RSPOTIFY_CLIENT_ID,
+// RSPOTIFY_CLIENT_SECRET from environment variables
+spotify.creds = Credentials::from_env().unwrap();
+spotify.refresh_token().await.unwrap();
+```
+
+The code above is what I came up with for using `rspotify` with a refresh token.
+1. Create the client with the refresh token and scopes
+2. Add the client id and client secret to the created client with `Credentials::from_env`
+3. Finally, get an access token by using `AuthCodeSpotify::refresh_token`
+	- After this, the client will automatically refresh the access token when it expires.
+
+After setting up the `rspotify` client, we can start using Spotify's API to get the data needed for the features.
+## Getting Top Tracks
+The first feature I wanted to add to my site was seeing my most listened to tracks. The client provides easy access to the necessary endpoint through `AuthCodeSpotify::current_user_top_tracks`. Using this, it was simple to collect my top tracks for the 3 time frames Spotify tracks. The only hiccup was that the API provides way too much information for each track, and I want to minimize bandwidth usage. To do this I just made a simple function that extracts the info I need to a new `SimpleTrack` struct.
+```rust file=src/main.rs
+fn full_track_to_simple(full_track: FullTrack) -> SimpleTrack {
+	SimpleTrack {
+		name: full_track.name,
+		artists: full_track
+			.artists
+			.into_iter()
+			.map(|artist| SimpleArtist {
+				name: artist.name,
+				url: artist.external_urls.get("spotify").cloned(),
+			})
+			.collect(),
+		image_url: full_track
+			.album
+			.images
+			.into_iter()
+			.next()
+			.map(|img| img.url),
+		url: full_track.external_urls.get("spotify").cloned(),
+		duration: full_track.duration.num_seconds() as u32,
+	}
+}
+```
+
+After creating this, it was pretty simple to get my top tracks for one of the provided time frames using `rspotify`.
+
+```rust file=src/main.rs
+async fn top_for_time_frame(
+	spotify: &AuthCodeSpotify,
+	num: usize,
+	time_frame: TimeRange,
+) -> Result<Vec<FullTrack>, String> {
+	let top_stream = spotify.current_user_top_tracks(Some(time_frame));
+
+	top_stream
+		.take(num)
+		.try_collect()
+		.await
+		.map_err(|e| e.to_string())
+}
+```
+
+From there, it was simple to respond to requests with a `Vec<SimpleTrack>` as JSON.
+## Currently Playing
+The next bit of info I wanted to add to my portfolio was what song I'm currently listening to. To get this info with `rspotify`, I used the following line.
+
+```rust
+spotify.current_playback(None, Some([&AdditionalType::Track]))
+```
+
+Once again, the returned struct has more information than needed for my site, so I made my own struct that only has the necessary information.
+
+```rust file=src/main.rs
+#[derive(Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
+struct Playing {
+	device: Device,
+	context: Option<Context>,
+	repeat: RepeatState,
+	shuffled: bool,
+	playing: SimpleTrack,
+	progress_secs: u32,
+}
+```
+
+It's notable that I used `rename_all = "camelCase"` on all the structs that are sent to the frontend since that is the standard for JavaScript and TypeScript projects, which my portfolio is.
+
+The code I use to extract the necessary data is below. First, we must check if Spotify has a currently playing track, then if the track is playing, then we can extract the necessary data.
+
+```rust file=src/main.rs
+if let Some(currently_playing) = currently_playing {
+	if currently_playing.is_playing {
+		let full_track = match currently_playing.item.unwrap().id().unwrap() {
+			rspotify::model::PlayableId::Track(track_id) => spotify
+				.track(track_id, None)
+				.await
+				.map_err(|e| e.to_string())?,
+			rspotify::model::PlayableId::Episode(_) => {
+				unreachable!("Should never be playing an episode.")
+			}
+		};
+
+		let playing = Playing {
+			device: currently_playing.device,
+			context: currently_playing.context,
+			playing: full_track_to_simple(full_track),
+			progress_secs: currently_playing.progress.unwrap().num_seconds() as u32,
+			repeat: currently_playing.repeat_state,
+			shuffled: currently_playing.shuffle_state,
+		}
+	}
+};
+```
+
+The `Playing` struct is then sent as JSON as the response body. The data here allows me to show the song I'm playing, what its playing on, what playlist its playing from, the progress, as well as if I have it shuffled or looping. With all this data, it looks really cool when my currently playing song shows up on my website.
+## Recently Played
+The last feature I want is to get my recently played songs. This can be done pretty easily through `rspotify`. The code below retrieves the last 10 recently played songs, then sorts them so the most recent song is first, then extracts the necessary data for my use-case.
+
+```rust file=src/main.rs
+let mut recent = spotify
+	.current_user_recently_played(
+		Some(10),
+		Some(TimeLimits::Before(chrono::offset::Utc::now())),
+	)
+	.await
+	.map_err(|e| e.to_string())?
+	.items;
+
+// Sort so that most recent is first
+recent.sort_unstable_by(|a, b| b.played_at.cmp(&a.played_at));
+
+let recent = recent
+	.into_iter()
+	.map(|his| LastPlayed {
+		track: full_track_to_simple(his.track),
+		context: his.context,
+		played_at: his.played_at,
+	})
+	.collect::<Vec<_>>();
+
+Json(recent)
+```
+
+## Wrapping Up
+With all of the functionality I need implemented, it was simple to deploy the program to AWS Lambda using `cargo-lambda`. I opted to upload the code on the AWS web console by first running `cargo lambda build --release --arm64` and then `cargo lambda deploy --dry`. This will create a `bootstrap.zip` file in `target/lambda/{crate_name}/bootstrap.zip` which can be uploaded to AWS to update the function code.
+## Check It Out
+Here are some links to my Portfolio where I used the service and the code for the service, if you want to go more in-depth.
+- [My Portfolio](https://igamble.dev)
+- [Spotify Service](https://gtihub.com/tsar-boomba/spotify-me)
