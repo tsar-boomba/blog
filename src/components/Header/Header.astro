@@ -44,6 +44,9 @@ import NavLink from './NavLink.astro';
 			left: 0;
 			right: 0;
 			gap: 0;
+			background-color: var(--bg-color-from);
+			background-image: linear-gradient(var(--bg-color-from) 5%, var(--bg-color-to) 99%);
+			box-shadow: 0px 8px 8px 0px rgba(0, 0, 0, 0.1);
 		}
 
 		.nav[data-opened] {
@@ -64,7 +67,7 @@ import NavLink from './NavLink.astro';
 		}
 	}
 </style>
-<header class='root'>
+<header id='header' class='root'>
 	<div>Isaiah Gamble</div>
 	<div class='toggle-wrapper'>
 		<button id='nav-toggle' class='nav-toggle' aria-label='Toggle Navigation'>
@@ -83,14 +86,17 @@ import NavLink from './NavLink.astro';
 	(() => {
 		const html = document.querySelector('html')!;
 		const nav = document.getElementById('nav') as HTMLElement;
+		const header = document.getElementById('header') as HTMLElement;
 		const toggle = document.getElementById('nav-toggle') as HTMLButtonElement;
 
 		const setupMenu = (nav: HTMLElement, toggle: HTMLButtonElement) => {
 			toggle.addEventListener('click', () => {
 				if (nav.dataset.opened) {
 					delete nav.dataset.opened;
+					header.style.boxShadow = '';
 				} else {
 					nav.dataset.opened = 'true';
+					header.style.boxShadow = 'none';
 				}
 			});
 

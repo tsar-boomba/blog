@@ -1,8 +1,15 @@
 ---
+import Button from '@/components/Button.astro';
 import Hero from '@/components/Hero.astro';
+import Stack from '@/components/Stack.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 ---
 
 <BaseLayout description='Milky Web brings a galaxy of web infrastructure into your hands.'>
-	<Hero />
+	<Stack align='center'>
+		<Hero />
+		<Button as='a' href='/posts' p='0.75rem 1.25rem' style={{ fontSize: '1.5rem' }}
+			>View Posts</Button
+		>
+	</Stack>
 </BaseLayout>
