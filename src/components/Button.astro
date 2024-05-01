@@ -1,0 +1,33 @@
+---
+import { handleStyleProps, StyleProps } from '@/utils/handleStyleProps';
+import type { HTMLTag, Polymorphic } from 'astro/types';
+import { PrimaryShades } from '@/utils/types';
+
+type Props<Tag extends HTMLTag> = Polymorphic<{ as: Tag }> & { shade?: PrimaryShades } & StyleProps;
+
+const { as: Tag = 'button', style: ogStyles, shade, class: className, ...props } = Astro.props;
+console.log(ogStyles);
+const styles = {
+	backgroundColor: props.shade ? `rgb(var(--primary-${shade}))` : '',
+	boxShadow: props.shade
+		? `0px 0px 36px 0px rgb(var(--primary-${shade < 1200 ? shade + 100 : shade}), 0.3)`
+		: '',
+	...ogStyles,
+	...handleStyleProps(props),
+};
+---
+
+<style lang='scss'>
+	.root {
+		padding: 0.5rem 1rem;
+		background-color: rgb(var(--primary-300));
+		box-shadow: 0px 0px 32px 0px rgba(var(--primary-400), 0.4);
+		border-radius: var(--radius);
+		color: var(--text-color);
+		text-decoration: none;
+		font-weight: 600;
+	}
+</style>
+<Tag {...props} style={styles} class:list={['root', className]}>
+	<slot />
+</Tag>

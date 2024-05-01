@@ -28,6 +28,7 @@ import Stack from './Stack.astro';
 				rgb(var(--primary-200)) 60%,
 				#fe62f9 90%
 			);
+			text-shadow: 0 0 96px rgba(255, 255, 255, 0.9);
 		}
 
 		:root[data-theme='light'] & > span {
@@ -46,13 +47,21 @@ import Stack from './Stack.astro';
 		text-align: center;
 	}
 
+	.hero-container {
+		padding: 6rem 0 4rem 0;
+	}
+
 	@media only screen and (max-width: $breakpoint) {
 		.hero-title {
 			font-size: 48px;
 		}
+
+		.hero-container {
+			padding: 2rem 0 1rem 0;
+		}
 	}
 </style>
-<Stack p='6rem 0 12rem 0' align='center'>
+<Stack class='hero-container' align='center'>
 	<h1 class='hero-title'><span>Isaiah Gamble</span></h1>
 	<p class='hero-text' style={{ textAlign: 'center' }}>A blog about development</p>
 </Stack>
