@@ -14,10 +14,9 @@ module.exports = {
 		'plugin:@typescript-eslint/eslint-recommended',
 		'plugin:@typescript-eslint/recommended',
 		'plugin:prettier/recommended',
-		'plugin:mdx/recommended',
 		'prettier',
 	],
-	plugins: ['@typescript-eslint', 'prettier', 'mdx'],
+	plugins: ['@typescript-eslint', 'prettier'],
 	rules: {
 		'react/display-name': 'off',
 		'@typescript-eslint/no-explicit-any': 'off',
