@@ -22,7 +22,6 @@ jobs:
           base: "main"
           # if a filter is false, it means that the only change matched it, so do not deploy
           filters: |
-            not-api: '!api/**'
             not-license: '!LICENSE*'
             not-readme: '!**/README*'
             not-vscode: '!.vscode/**'
@@ -52,54 +51,10 @@ jobs:
           path: dist/
           retention-days: 2
 
-  api-changes:
-    runs-on: ubuntu-latest
-
-    outputs:
-      changed: ${{ contains(steps.changes.outputs.changes, 'src') || contains(steps.changes.outputs.changes, 'actions') }}
-    steps:
-      - uses: actions/checkout@v4
-      - name: Changes
-        id: changes
-        uses: dorny/paths-filter@v2
-        with:
-          base: "main"
-          filters: |
-            src: api/**
-            actions: .github/**
-
-  deploy-api:
-    runs-on: ubuntu-latest
-    needs: api-changes
-    if: ${{ needs.api-changes.outputs.changed == 'true' && false }}
-    defaults:
-      run:
-        shell: bash
-        working-directory: api
-
-    steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
-      - uses: Swatinem/rust-cache@v2
-        with:
-          cache-targets: false
-      - name: Install Shuttle
-        uses: taiki-e/install-action@v1
-        with:
-          tool: cargo-shuttle
-      - name: Login to Shuttle
-        run: cargo shuttle login --api-key ${{ secrets.SHUTTLE_API_KEY }}
-      - name: Create Secrets.toml
-        # add secrets from repo into a file for shuttle when we deploy
-        run: |
-          touch Secrets.toml
-      - name: Deploy
-        run: cargo shuttle deploy
-
   deploy-pages:
     runs-on: ubuntu-latest
-    needs: [build-pages, deploy-api]
-    if: ${{ !failure() && !cancelled() && (needs.build-pages.result == 'success' || needs.deploy-api.result == 'success' ) }}
+    needs: [build-pages]
+    if: ${{ !failure() && !cancelled() && needs.build-pages.result == 'success' }}
     permissions:
       pages: write      # to deploy to Pages
       id-token: write   # to verify the deployment originates from an appropriate source
