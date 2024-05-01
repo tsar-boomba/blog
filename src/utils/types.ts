@@ -5,6 +5,7 @@ export type PostFrontmatter = {
 	publishDate: string;
 	tags: string[];
 	editDate?: string;
+	published?: true;
 };
 
 export type PrimaryShades =
