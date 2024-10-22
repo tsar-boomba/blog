@@ -6,10 +6,11 @@ import robotsTxt from 'astro-robots-txt';
 // plugin in separate file don't work 🤷
 import type { Plugin } from 'unified';
 import type { Root } from 'mdast';
-import { createCssVariablesTheme, getHighlighter } from 'shiki';
+import { createCssVariablesTheme, createHighlighter, getHighlighter } from 'shiki';
 import type { Highlighter, BuiltinLanguage } from 'shiki';
 import { visit } from 'unist-util-visit';
 import playformCompress from '@playform/compress';
+
 const SUPPORTED_LANGS = [
 	'javascript',
 	'typescript',
@@ -21,25 +22,31 @@ const SUPPORTED_LANGS = [
 	'md',
 	'mdx',
 	'astro',
+	'sh',
 ] as const satisfies BuiltinLanguage[];
+
 type BlockParams = {
 	file?: string;
 	noBadge?: boolean;
 };
+
 const myTheme = createCssVariablesTheme({
 	name: 'css-variables',
 	variablePrefix: '--shiki-',
 	variableDefaults: {},
 	fontStyle: true,
 });
+
 let highlighterCache: Promise<Highlighter>;
 const parseLangRe = /(?=(?:file=(?<file>\S*))?)(?=(?:noBadge=(?<noBadge>true|false))?)/g;
+
 export const remarkCustomCodeBlock: () => Promise<Plugin<any[], Root>> = async () => {
 	if (!highlighterCache)
-		highlighterCache = getHighlighter({
+		highlighterCache = createHighlighter({
 			themes: [myTheme],
 			langs: SUPPORTED_LANGS,
 		});
+
 	const highlighter = await highlighterCache;
 	return () => (tree) => {
 		visit(tree, 'code', (node) => {

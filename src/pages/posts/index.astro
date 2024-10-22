@@ -14,7 +14,9 @@ const posts = await Astro.glob<PostFrontmatter>('./**/*.mdx');
 		>{
 			posts.length > 1 ? (
 				posts
-					.filter(({ frontmatter }) => frontmatter.published)
+					.filter(
+						({ frontmatter }) => frontmatter.published === true || import.meta.env.DEV,
+					)
 					.map((post) => (
 						<Card
 							as='a'

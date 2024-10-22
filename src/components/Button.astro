@@ -6,7 +6,6 @@ import { PrimaryShades } from '@/utils/types';
 type Props<Tag extends HTMLTag> = Polymorphic<{ as: Tag }> & { shade?: PrimaryShades } & StyleProps;
 
 const { as: Tag = 'button', style: ogStyles, shade, class: className, ...props } = Astro.props;
-console.log(ogStyles);
 const styles = {
 	backgroundColor: props.shade ? `rgb(var(--primary-${shade}))` : '',
 	boxShadow: props.shade

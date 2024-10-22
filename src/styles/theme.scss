@@ -42,7 +42,7 @@ html[data-theme='light'] {
 	--shiki-token-parameter: #aa0000;
 	--shiki-token-function: #bb0000;
 	--shiki-token-string-expression: #8f00cc;
-	--shiki-token-punctuation: #dd0000;
+	--shiki-token-punctuation: #270158;
 	--shiki-token-link: #0004ff;
 }
 
@@ -73,13 +73,13 @@ html[data-theme='dark'] {
 	// For code highlighting
 	--shiki-foreground: #ffffff;
 	--shiki-background: #000000;
-	--shiki-token-constant: #fbaaaa;
-	--shiki-token-string: #770000;
+	--shiki-token-constant: rgb(167, 131, 247);
+	--shiki-token-string: #e6db74;
 	--shiki-token-comment: #fd971f;
-	--shiki-token-keyword: #00e5ff;
+	--shiki-token-keyword: rgb(233, 53, 110);
 	--shiki-token-parameter: #fd971f;
 	--shiki-token-function: #a6e22e;
 	--shiki-token-string-expression: #e6db74;
-	--shiki-token-punctuation: #dd0000;
-	--shiki-token-link: #ee0000;
+	--shiki-token-punctuation: #ffffff;
+	--shiki-token-link: #00eaee;
 }

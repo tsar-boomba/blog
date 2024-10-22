@@ -1,0 +1,178 @@
+---
+layout: "@/layouts/PostLayout.astro"
+title: Using the Letterboxd API
+summary: Using the Letterboxd API to show my favorite shows on my site
+author: Isaiah Gamble
+publishDate: 13 November 2024
+tags:
+  - React
+  - TypeScript
+  - Node.js
+  - Next.js
+editDate: ""
+published: false
+---
+# Why?
+I was thinking on how I first started programming in the Summer of 2021. I started out by following Lee Robinson's tutorial on using Spotify's API to show what song you're currently listening to on your site. I want to give back to the world by now making my own, modern, version for all the burgeoning programmers out there. 😁👍
+# Goal
+The goal of this project will be to get reviews from our Letterboxd account and show them on a website for all of our visitor's pleasure.
+## Planning
+### Obtaining Data
+The first thing I thought about when starting out on this project was how are we gonna get the data from Letterboxd. A lot of popular sites like Twitter, Spotify, and GitHub, provide their data through APIs for public access. This means that we would have a easy, official, and most importantly, documented way to get the data we want. Luckily, Letterboxd has an OAuth2 API that we can use to programmatically get the data we want.
+### Server-Side Language Choice
+Now that we have a path forward on obtaining our data, we need to choose a language to do this in. This code will have to be executed on a server since it will require sensitive credentials. Pretty much any language can be executed on the server-side, so we have a lot of choice for this. Some of great choices are Rust for its great performance and robustness, TypeScript for its perfect balance of performance, safety, and ease-of-use, and Python for its large community support and similarity to pseudocode.
+
+If this was just for my own personal use, I'd pick Rust without a second thought. Its become very easy for me to work in and reduces costs for deployment down to cents per month. I recommend checking it out once you become more experienced in programming and want to dip your toes into something lower-level.
+
+For this project, we will be proceeding in TypeScript (TS). It strikes a perfect balance between the two extremes and should be familiar to anyone whose used a c-like language such as c, c++, java, or JavaScript (especially considering TS is a superset of JS). Using TS will also help build invaluable skills in using Node.js and Node Package Manager (NPM), which are used in pretty much every modern web project.
+### Frontend
+Now that we've decided how we'll implement the server-side logic, we need to consider how we'll show this to the user. We want to make a website, so there are many, many options out there. You could go for plain HTML, CSS, and JS, or maybe Vue or Svelte. Despite all of the choices, in my eyes there is far and away one winner. React. I have spent thousands of hours toiling in React codebases, and not once have I ever regretted my decision to use it. I believe it is the reactive frontend perfected. Because of its popularity, there are a lot of resources for learning React and libraries that implement common patterns, so it's a pleasure to work with. For a deeper understanding of React than this tutorial can provide, I recommend you checkout [react.dev](https://react.dev). We will also be using the React framework [next.js](https://nextjs.org/) because it is very standard for building React applications and provides features that are useful for deploying our frontend.
+# Server Code
+We will be starting by creating the code that will interact with the Letterboxd API. As discussed before, we will be using TypeScript with Node.js to do this. Make sure you have Node.js installed by running `node -v` in a terminal. If you see something like `v20.9.0`, you should be good to go. The first number should be at least 18 to follow along.
+## Set Up
+We will get started by creating a Node.js project by creating an `api` folder in the folder for our project. After this run `npm init -y` in the `api`. Now we will proceed to install the dependencies for the api.
+```sh
+npm i aws-lambda
+npm i -D typescript prettier @types/aws-lambda @types/node
+```
+After installing the dependencies, we need to configure the TypeScript compiler and prettier, for code formatting.
+```json file=api/tsconfig.json
+{
+	"compilerOptions": {
+		"incremental": true,
+		"target": "es2017",
+		"outDir": "build/main",
+		"rootDir": "src",
+		"moduleResolution": "node",
+		"module": "ES6",
+		"esModuleInterop": true,
+		"resolveJsonModule": true,
+
+		"strict": true /* Enable all strict type-checking options. */,
+
+		/* Additional Checks */
+		"noImplicitReturns": true /* Report error when not all code paths in function return a value. */,
+		"noFallthroughCasesInSwitch": true /* Report errors for fallthrough cases in switch statement. */,
+		"lib": ["es2017", "dom"],
+		"types": ["node"],
+	},
+	"include": ["src/**/*.ts"],
+	"exclude": ["node_modules/**"],
+	"compileOnSave": false
+}
+```
+
+```json file=api/.prettierrc
+{
+	"useTabs": true,
+	"singleQuote": true
+}
+```
+You can skip the prettier config if you don't care about having consistent formatting, but I'd recommend it, along with the VS Code extension as it is standard in industry to have some kind of tool to enforce formatting, even if it isn't the same settings I use here.
+
+Now we want to add a `src` directory to store our source code. Inside here, we'll create a `index.ts` file as an entrypoint to the program when we deploy it and to hold most of our logic. In order to test our code locally, we'll also create a `test.ts` in `src` that will start up a local HTTP server for development.
+## Testing Our Code
+We'll start by making a skeleton of what our code should look like. In `index.ts`, let's set up the code necessary for deploying to AWS Lambda. For lambda, we need to export a function named `handler` which will be called whenever an event occurs. A basic file should look something like this:
+```ts file=api/src/index.ts
+import { APIGatewayEvent, APIGatewayProxyResult, Handler } from 'aws-lambda';
+
+export const getReviews = async () => {};
+
+export const handler: Handler<APIGatewayEvent, APIGatewayProxyResult> = async (event, ctx) => {
+	return {
+		statusCode: 200,
+		body: '',
+	};
+};
+```
+Right now, our function would just always return a response with status 200 and an empty body. We also export a `getReviews` function which is where we'll be doing all of the logic related to Letterboxd's API. For now, lets just have `getReviews` return an array of objects to mock an actual API call.
+```ts file=api/src/index.ts
+export const getReviews = async () => {
+	return [
+		{ review: 'it was good' },
+		{ review: 'it sucked' },
+		{ review: 'i loved it!' }
+	];
+};
+
+export const handler: Handler<APIGatewayEvent, APIGatewayProxyResult> = async (event, ctx) => {
+	return {
+		statusCode: 200,
+		body: JSON.stringify(await getReviews()),
+	};
+};
+```
+This is all pretty straightforward, but one thing you might've noticed is that we put an `await` before we call `getReviews`. This is because `getReviews` is an `async` function. In JavaScript, functions can be marked as `async`. This means that they will immediately return a `Promise` instead of executing to the end or a `return`. We can use the `await` keyword in front of `Promise` expressions to pause the execution of the current function until that `Promise` resolves to a value. This is useful for doing things like networking and other kinds of Input/Output, because your program is just waiting and can do other tings while `await`ing. [This is a more comprehensive writeup on promises](https://javascript.info/async) to read after this.
+
+After the `Promise` from `getReviews` resolves, we use it as the argument to `JSON.stringify`. This is because AWS will expect the body to be a `string`, not a JS object. `JSON.stringify` will take a JS object and convert it into a `string` of JSON (a standard format for program communication) which we can send back as a response and parse on the frontend.
+### Setting Up The Test Server
+In order to test our code locally, we'll want to have a HTTP server running locally to emulate the deployed lambda. To achieve this, we'll use [fastify](https://fastify.io) as a more modern alternative to the popular [express.js](https://expressjs.com). Start installing fastify while in the `api` folder.
+```sh
+npm i fastify
+```
+Here is the code we'll start with for development:
+```ts file=api/src/test.ts
+import fastify from "fastify";
+import { getReviews } from "."; // imported from index.ts
+
+const server = fastify();
+
+server.get('/', async (req) => {
+	const reviews = await getReviews();
+	console.log(reviews);
+	return reviews;
+});
+
+try {
+	console.log('Starting server...');
+	await server.listen({
+		port: 5000
+	});
+} catch (e) {
+	console.error('Fastify error', e);
+	process.exit(1);
+}
+```
+Node.js can't run TypeScript directly, since TS has to be compiled into JS first. We will use [tsx](https://tsx.is) to directly run our `test.ts` file as if it was a `.js` file. Install `tsx` as a development dependency.
+```sh
+npm i -D tsx
+```
+Now we'll add a `dev` script to our `package.json` that will run `tsx` in watch mode. We'll also add `"type": "module"` so that we can use modern JS features in Node.js. Our `package.json` now looks like this:
+```json file=api/package.json
+{
+	"name": "letterboxd",
+	"version": "1.0.0",
+	"main": "index.js",
+	"type": "module",
+	"scripts": {
+		"build": "tsc",
+		"dev": "tsx watch src/test.ts"
+	},
+	"author": "",
+	"license": "MIT",
+	"description": "",
+	"dependencies": {
+		"aws-lambda": "^1.0.7",
+		"fastify": "^5.0.0"
+	},
+	"devDependencies": {
+		"@types/aws-lambda": "^8.10.145",
+		"@types/node": "^22.7.7",
+		"prettier": "^3.3.3",
+		"tsx": "^4.19.1",
+		"typescript": "^5.6.3"
+	}
+}
+```
+Now we can start our dev server at [http://localhost:5000](http://localhost:5000) by running:
+```sh
+npm run dev
+```
+If you navigate to the [server address](http://localhost:5000)  in your browser, you should see:
+```json
+[{"review":"it was good"},{"review":"it sucked"},{"review":"i loved it!"}]
+```
+## Integrating With Letterboxd
+Now that we have our development environment properly setup, we can finally start interacting with [Letterboxd's API](https://api-docs.letterboxd.com/).
+### Authenticating
+The first step to using any kind of third-party API is to confirm who you are, or authentication, and that you have access to the data you want, or authorization. 
