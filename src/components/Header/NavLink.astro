@@ -31,4 +31,4 @@ const isActive =
 		}
 	}
 </style>
-<a data-active={isActive} href={href} class='root'>{label}</a>
+<a data-active={isActive || undefined} href={href} class='root'>{label}</a>
