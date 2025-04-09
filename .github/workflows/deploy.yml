@@ -46,7 +46,7 @@ jobs:
                   pnpm i --frozen-lockfile
                   pnpm build
             - name: Upload Artifact
-              uses: actions/upload-pages-artifact@v1
+              uses: actions/upload-pages-artifact@v4
               with:
                   path: dist/
                   retention-days: 2
