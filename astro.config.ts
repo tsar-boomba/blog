@@ -6,7 +6,7 @@ import robotsTxt from 'astro-robots-txt';
 // plugin in separate file don't work 🤷
 import type { Plugin } from 'unified';
 import type { Root } from 'mdast';
-import { createCssVariablesTheme, createHighlighter, getHighlighter } from 'shiki';
+import { createCssVariablesTheme, createHighlighter } from 'shiki';
 import type { Highlighter, BuiltinLanguage } from 'shiki';
 import { visit } from 'unist-util-visit';
 import playformCompress from '@playform/compress';
@@ -39,6 +39,41 @@ const myTheme = createCssVariablesTheme({
 
 let highlighterCache: Promise<Highlighter>;
 const parseLangRe = /(?=(?:file=(?<file>\S*))?)(?=(?:noBadge=(?<noBadge>true|false))?)/g;
+const langColorMap: {
+	[K in BuiltinLanguage]?: {
+		bg: string;
+		fg: string;
+	};
+} = {
+	css: {
+		bg: '#264de4',
+		fg: '#fff',
+	},
+	ts: {
+		bg: '#007acc',
+		fg: '#fff',
+	},
+	tsx: {
+		bg: '#007acc',
+		fg: '#fff',
+	},
+	java: {
+		bg: '#ed8b00',
+		fg: '#fff',
+	},
+	rust: {
+		bg: '#dea584',
+		fg: '#fff',
+	},
+	astro: {
+		bg: '#ff5a03',
+		fg: '#fff',
+	},
+	toml: {
+		bg: '#9c4221',
+		fg: '#fff',
+	},
+};
 
 export const remarkCustomCodeBlock: () => Promise<Plugin<any[], Root>> = async () => {
 	if (!highlighterCache)
@@ -58,41 +93,7 @@ export const remarkCustomCodeBlock: () => Promise<Plugin<any[], Root>> = async (
 				);
 			}
 			const { file, noBadge = false } = metaMatch.groups as unknown as BlockParams;
-			const langColorMap: {
-				[K in BuiltinLanguage]?: {
-					bg: string;
-					fg: string;
-				};
-			} = {
-				css: {
-					bg: '#264de4',
-					fg: '#fff',
-				},
-				ts: {
-					bg: '#007acc',
-					fg: '#fff',
-				},
-				tsx: {
-					bg: '#007acc',
-					fg: '#fff',
-				},
-				java: {
-					bg: '#ed8b00',
-					fg: '#fff',
-				},
-				rust: {
-					bg: '#dea584',
-					fg: '#fff',
-				},
-				astro: {
-					bg: '#ff5a03',
-					fg: '#fff',
-				},
-				toml: {
-					bg: '#9c4221',
-					fg: '#fff',
-				},
-			};
+			
 			const lang: BuiltinLanguage = (() => {
 				const lang = rawLang as BuiltinLanguage;
 				if (lang === 'typescript') return 'ts';

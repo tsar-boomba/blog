@@ -4,7 +4,9 @@ import Group from '@/components/Group.astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import type { PostFrontmatter } from '@/utils/types';
 
-const posts = await Astro.glob<PostFrontmatter>('./**/*.mdx');
+const posts = Object.values(
+	import.meta.glob<{ url: string; frontmatter: PostFrontmatter }>('./**/*.mdx', { eager: true }),
+);
 ---
 
 <style lang='scss'></style>
@@ -12,29 +14,23 @@ const posts = await Astro.glob<PostFrontmatter>('./**/*.mdx');
 	<h1>Posts</h1>
 	<Group gap='1rem' justify='center' align='center'
 		>{
-			posts.length > 1 ? (
-				posts
-					.filter(
-						({ frontmatter }) => frontmatter.published === true || import.meta.env.DEV,
-					)
-					.map((post) => (
-						<Card
-							as='a'
-							href={post.url}
-							p='1rem'
-							mxw={300}
-							shade={500}
-							style={{ cursor: 'pointer', textDecoration: 'none', flexGrow: 1 }}
-						>
-							<h2 style='margin:0'>{post.frontmatter.title}</h2>
-							<p style='margin:0;line-height:normal;font-size:0.9rem;'>
-								{post.frontmatter.summary}
-							</p>
-						</Card>
-					))
-			) : (
-				<Card fz={64}>Coming Soon</Card>
-			)
+			posts
+				.filter(({ frontmatter }) => frontmatter.published === true || import.meta.env.DEV)
+				.map((post) => (
+					<Card
+						as='a'
+						href={post.url}
+						p='1rem'
+						mxw={300}
+						shade={500}
+						style={{ cursor: 'pointer', textDecoration: 'none', flexGrow: 1 }}
+					>
+						<h2 style='margin:0'>{post.frontmatter.title}</h2>
+						<p style='margin:0;line-height:normal;font-size:0.9rem;'>
+							{post.frontmatter.summary}
+						</p>
+					</Card>
+				))
 		}</Group
 	>
 </BaseLayout>
