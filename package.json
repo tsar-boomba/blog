@@ -42,5 +42,5 @@
 	"dependencies": {
 		"astro-icon": "1.1.5"
 	},
-	"packageManager": "pnpm@10.18.1"
+	"packageManager": "pnpm@10.20.0"
 }
