@@ -29,18 +29,13 @@ jobs:
     build-pages:
         runs-on: ubuntu-latest
         needs: pages-changes
-        if: ${{ 'true' }}
+        if: ${{ needs.pages-changes.outputs.changed }}
 
         steps:
             - uses: actions/checkout@v4
             - uses: pnpm/action-setup@v2.4.1
               with:
-                  version: 9
-            - name: Setup Node
-              uses: actions/setup-node@v3
-              with:
-                  node-version: '20'
-                  cache: 'pnpm'
+                  version: 10
             - name: Build
               run: |
                   pnpm i --frozen-lockfile
