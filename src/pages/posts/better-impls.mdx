@@ -1,0 +1,35 @@
+---
+layout: '@/layouts/PostLayout.astro'
+title: 'Better Impls'
+summary: 'Can impl blocks in Rust be better? Yes.'
+author: 'Isaiah Gamble'
+publishDate: '10 November 2025'
+tags: ['Rust']
+---
+
+## Inspiration
+
+I was going through my RSS feed aggregator on a lazy Sunday when I encountered [an interesting 2021 blog post](https://cbarrete.com/rust-bad.html) about the author's dislikes of Rust. Even in 2025, I agree with all of the points they made in the post. The one issue that really stook out to me though, were the complaints about `impl` blocks in Rust.
+
+## The Issue
+
+Take the following, very standard, idiomatic Rust code:
+
+```rs
+struct Container<T> {
+	data: T,
+	metadata: usize,
+}
+
+impl<T> Container<T> {
+	pub fn new(data: T) -> Self {
+		// Construct Self 🏗️
+	}
+
+	pub fn do_something(&self) {
+		// Code here 😁👍
+	}
+}
+```
+
+Looks pretty normal, especially to someone used to Rust. But to people less desensitized to the syntax, the impl block immediately adds a level of indentation to all member functions for `struct`s and `enum`s that really sticks out! This didn't bother me, since outside of Rust all I really know is TypeScript and Java
