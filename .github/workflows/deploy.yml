@@ -38,6 +38,8 @@ jobs:
               with:
                   node-version: 20
                   cache: 'pnpm'
+            - run: pnpm i --frozen-lockfile
+            - run: pnpm build
             - name: Upload Artifact
               uses: actions/upload-pages-artifact@v3
               with:
