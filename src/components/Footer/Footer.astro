@@ -55,12 +55,14 @@
 			);
 		}
 
-		clip-path: inset(-100vh 0px 0px 0px); // cut off al borders except top
+		clip-path: inset(-100vh 0px 0px 0px); // cut off all borders except top
 		box-shadow: 0px 0vh 20vh 2vh rgba(255, 255, 255, 0.7);
 	}
 
 	.root {
 		display: flex;
+		flex-wrap: wrap;
+		gap: var(--spacing-md);
 		justify-content: space-between;
 		font-size: 1.25rem;
 	}
