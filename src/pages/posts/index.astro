@@ -9,7 +9,9 @@ const posts = Object.values(
 );
 ---
 
-<style lang='scss'></style>
+<style lang='scss'>
+	
+</style>
 <BaseLayout title='Isaiah Gamble Blog | Posts' description="Posts on Isaiah Gamble's blog.">
 	<h1>Posts</h1>
 	<Group gap='1rem' justify='center' align='center'
@@ -25,8 +27,8 @@ const posts = Object.values(
 						shade={500}
 						style={{ cursor: 'pointer', textDecoration: 'none', flexGrow: 1 }}
 					>
-						<h2 style='margin:0'>{post.frontmatter.title}</h2>
-						<p style='margin:0;line-height:normal;font-size:0.9rem;'>
+						<h2 style='font-size:1.5rem;margin:0'>{post.frontmatter.title}</h2>
+						<p style='text-align:center;margin:0;line-height:normal;font-size:0.9rem;'>
 							{post.frontmatter.summary}
 						</p>
 					</Card>
