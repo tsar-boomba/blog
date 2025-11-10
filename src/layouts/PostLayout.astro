@@ -24,6 +24,11 @@ const { frontmatter } = Astro.props as Props;
 		font-size: 2.5rem;
 	}
 
+	h2 {
+		font-size: 2rem;
+		margin: 0.5rem 0;
+	}
+
 	a,
 	a:link,
 	a:visited {
@@ -34,21 +39,21 @@ const { frontmatter } = Astro.props as Props;
 		}
 	}
 
+	p {
+		margin: 0.5rem 0;
+		text-align: justify;
+	}
+
 	p,
 	li {
 		font-size: 1.25rem;
 		line-height: 1.5;
 	}
 
-	code > span {
-		font-size: 1.125rem;
-	}
-
 	code {
 		background-color: var(--shiki-background);
 		padding: 2px;
 		border-radius: var(--radius);
-		word-break: break-all;
 	}
 
 	.article-container {
@@ -118,7 +123,7 @@ const { frontmatter } = Astro.props as Props;
 	]}
 >
 	<Box class='article-container'>
-		<Box as='article' class='article' mxw={1200} ml='auto' mr='auto'>
+		<Box as='article' class='article' mxw={1000} ml='auto' mr='auto'>
 			<Box as='h1' m={0}>{frontmatter.title}</Box>
 			<Box as='p' m={0}>
 				Published: <Box as='span' class='publish-date'>
@@ -171,7 +176,6 @@ const { frontmatter } = Astro.props as Props;
 				} else if (span.textContent === 'self' || span.textContent === 'Self') {
 					span.style.color = 'var(--code-func)';
 				} else {
-					console.log('bolded', span);
 					span.style.fontWeight = '600';
 				}
 			}

@@ -1,0 +1,63 @@
+---
+layout: '@/layouts/PostLayout.astro'
+title: 'Another Impl'
+summary: 'Can impl blocks in Rust be better? Maybe'
+author: 'Isaiah Gamble'
+publishDate: '10 November 2025'
+tags: ['Rust']
+---
+
+## Inspiration
+
+I was going through [my custom RSS feed aggregator](https://github.com/tsar-boomba/my-feed) on a lazy Sunday when I encountered [an interesting 2021 blog post](https://cbarrete.com/rust-bad.html) about the author's dislikes of Rust. Even in 2025, I agree with all of the points they made in the post. The one issue that really stook out to me though, were the complaints about `impl` blocks in Rust.
+
+## The Issue
+
+Take the following, very standard, idiomatic Rust code:
+
+```rs
+struct Container<T> {
+	data: T,
+	metadata: usize,
+}
+
+impl<T> Container<T> {
+	pub fn new(data: T) -> Self {
+		// Construct Self 🏗️
+	}
+
+	pub fn do_something(&self) {
+		// Code here 😁👍
+	}
+
+	pub fn transition<U>(&self) -> U {
+		// Transition
+	}
+}
+```
+
+Looks pretty normal, especially to someone used to Rust. But to people less desensitized to the syntax, the `impl` block immediately adds a level of indentation to all member functions for `struct`s and `enum`s that really sticks out! This had never even occurred to me until I read that blog post, but now I can't unsee it. So what could we do better?
+
+## My Proposal
+
+I think we could have a syntax like this (forgive the poor highlighting):
+
+```rs
+pub fn Container<T>::new(data: T) -> Self {
+	// Construction
+}
+
+pub fn Container<T>::do_something(&self) -> Self {
+	// Something
+}
+
+pub fn Container<T>::transition<U>(&self) -> U {
+	// Transition
+}
+```
+
+I'm not super familiar with the internals of `rustc`, so I'm not sure of feasible this would even be, but to me, this is a massive improvement over the current `impl` block. There's no longer a base level of indentation for all items for the type. The main drawback, however, is now there's duplication of the type name and generic parameters. This could be alleviated a bit by allowing `_` to elide unused parameters.
+
+## Conclusion
+
+Overall, I'm pretty happy with how Rust's `impl` blocks work today (thanks to shorthand bounds), and wouldn't get behind this specific proposal, but it's always worth taking a second look and seeing what we might do better. Thanks for reading!

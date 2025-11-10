@@ -4,8 +4,8 @@ import mdx from '@astrojs/mdx';
 import robotsTxt from 'astro-robots-txt';
 
 // plugin in separate file don't work 🤷
-import type { Plugin } from 'unified';
-import type { Code, Root } from 'mdast';
+import { type Plugin } from 'unified';
+import { type Code, type Root } from 'mdast';
 import { visit } from 'unist-util-visit';
 import playformCompress from '@playform/compress';
 import hljs from 'highlight.js';
@@ -59,7 +59,8 @@ const langToName: {
 	javascript: 'js',
 };
 
-export const remarkCustomCodeBlock: () => Promise<Plugin<any[], Root>> = async () => {
+/** Apply highlight.js to code blocks */
+const remarkCustomCodeBlock: () => Plugin<any[], Root> = () => {
 	return () => async (tree) => {
 		const codeNodes: Code[] = [];
 		visit(tree, 'code', (node) => {
@@ -110,6 +111,25 @@ export const remarkCustomCodeBlock: () => Promise<Plugin<any[], Root>> = async (
 	};
 };
 
+/** Convert external links to target=_blank */
+const mdLinksTargetBlank = (): Plugin<any[], Root> => {
+	return () => (tree) => {
+		visit(tree, 'link', (node) => {
+			if (
+				node.url.startsWith('http') &&
+				node.children.length === 1 &&
+				node.children[0].type === 'text'
+			) {
+				const href = node.url;
+				const text = node.children[0].value;
+				(node as any).type = 'html';
+				(node as any).value = `<a href="${href}" target="_blank">${text}</a>`;
+				(node as any).children = [];
+			}
+		});
+	};
+};
+
 // https://astro.build/config
 export default defineConfig({
 	site: 'https://blog.igamble.dev',
@@ -133,6 +153,6 @@ export default defineConfig({
 	],
 	markdown: {
 		syntaxHighlight: false,
-		remarkPlugins: [await remarkCustomCodeBlock()],
+		remarkPlugins: [remarkCustomCodeBlock(), mdLinksTargetBlank()],
 	},
 });
