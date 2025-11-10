@@ -35,6 +35,17 @@ import NavLink from './NavLink.astro';
 		display: none;
 	}
 
+	.name {
+		font-size: 1.25rem;
+		font-weight: 600;
+		text-decoration: none;
+		color: var(--text-color);
+	}
+
+	.name::before {
+		content: 'Isaiah Gamble';
+	}
+
 	@media only screen and (max-width: $breakpoint) {
 		.nav {
 			display: none;
@@ -65,15 +76,19 @@ import NavLink from './NavLink.astro';
 			background-color: transparent;
 			cursor: pointer;
 		}
+
+		.name::before {
+			content: 'Isaiah G';
+		}
 	}
 </style>
 <header id='header' class='root'>
-	<div>Isaiah Gamble</div>
+	<a class='name' href='/' />
 	<div class='toggle-wrapper'>
 		<button id='nav-toggle' class='nav-toggle' aria-label='Toggle Navigation'>
-			<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'
-				><path d='M24 6h-24v-4h24v4zm0 4h-24v4h24v-4zm0 8h-24v4h24v-4z'></path></svg
-			>
+			<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'>
+				<path d='M24 6h-24v-4h24v4zm0 4h-24v4h24v-4zm0 8h-24v4h24v-4z' />
+			</svg>
 		</button>
 	</div>
 	<nav id='nav' class='nav'>
