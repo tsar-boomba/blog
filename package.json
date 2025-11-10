@@ -19,7 +19,6 @@
 		"@types/mdast": "4.0.4",
 		"@typescript-eslint/eslint-plugin": "8.46.3",
 		"@typescript-eslint/parser": "8.46.3",
-		"@wooorm/starry-night": "^3.8.0",
 		"astro": "5.15.3",
 		"astro-robots-txt": "1.0.0",
 		"autoprefixer": "10.4.21",
@@ -36,14 +35,12 @@
 		"postcss-preset-env": "10.4.0",
 		"prettier": "3.6.2",
 		"sass": "1.93.3",
-		"shiki": "3.14.0",
 		"svgo": "4.0.0",
 		"typescript": "5.9.3",
 		"unified": "11.0.5",
 		"unist-util-visit": "5.0.0"
 	},
 	"dependencies": {
-		"@speed-highlight/core": "^1.2.12",
 		"astro-icon": "1.1.5"
 	},
 	"packageManager": "pnpm@10.20.0"
