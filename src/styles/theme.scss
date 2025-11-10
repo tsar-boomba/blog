@@ -33,17 +33,43 @@ html[data-theme='light'] {
 	--link-hovered-color: rgb(var(--primary-1200));
 
 	// For code highlighting
-	--shiki-foreground: #270158;
-	--shiki-background: #fefeeb;
-	--shiki-token-constant: #0092fa;
-	--shiki-token-string: #770000;
-	--shiki-token-comment: #880000;
-	--shiki-token-keyword: #00a220;
-	--shiki-token-parameter: #aa0000;
-	--shiki-token-function: #bb0000;
-	--shiki-token-string-expression: #8f00cc;
-	--shiki-token-punctuation: #270158;
-	--shiki-token-link: #0004ff;
+	--code-foreground: #270158;
+	--code-background: #fefeeb;
+	--code-constant: #0092fa;
+	--code-string: #770000;
+	--code-comment: #880000;
+	--code-keyword: #00a220;
+	--code-parameter: #aa0000;
+	--code-func: #bb0000;
+	--code-decl: #00a220;
+	& .hljs-literal, & .hljs-number {
+		color: var(--code-constant);
+	}
+
+	& .hljs-string {
+		color: var(--code-string);
+	}
+
+	& .hljs-comment {
+		color: var(--code-comment);
+	}
+
+	& .hljs-keyword, & .hljs-name, & .hljs-punctuation {
+		color: var(--code-keyword);
+	}
+
+	& .function_ {
+		color: var(--code-func)
+	}
+
+	& .hljs-params .hljs-attr {
+		color: var(--code-parameter);
+	}
+
+	& .hljs-params .hljs-built_in {
+		color: var(--code-decl);
+		font-style: italic;
+	}
 }
 
 html[data-theme='dark'] {
@@ -71,15 +97,42 @@ html[data-theme='dark'] {
 	--link-hovered-color: rgb(var(--primary-300));
 
 	// For code highlighting
-	--shiki-foreground: #ffffff;
-	--shiki-background: #000000;
-	--shiki-token-constant: rgb(167, 131, 247);
-	--shiki-token-string: #e6db74;
-	--shiki-token-comment: #fd971f;
-	--shiki-token-keyword: rgb(233, 53, 110);
-	--shiki-token-parameter: #fd971f;
-	--shiki-token-function: #a6e22e;
-	--shiki-token-string-expression: #e6db74;
-	--shiki-token-punctuation: #ffffff;
-	--shiki-token-link: #00eaee;
+	--code-foreground: #ffffff;
+	--code-background: #000000;
+	--code-constant: rgb(167, 131, 247);
+	--code-string: #e6db74;
+	--code-comment: #fd971f;
+	--code-keyword: rgb(233, 53, 110);
+	--code-parameter: #fd971f;
+	--code-func: #a6e22e;
+	--code-decl: #00eaee;
+	& .hljs-literal, & .hljs-number {
+		color: var(--code-constant);
+	}
+
+	& .hljs-string {
+		color: var(--code-string);
+	}
+
+	& .hljs-comment {
+		color: var(--code-comment);
+	}
+
+	& .hljs-keyword, & .hljs-name, & .hljs-punctuation {
+		color: var(--code-keyword);
+	}
+
+	& .function_ {
+		color: var(--code-func)
+	}
+
+	& .hljs-params .hljs-attr {
+		color: var(--code-parameter);
+		font-style: italic;
+	}
+
+	& .hljs-params .hljs-built_in {
+		color: var(--code-decl);
+		font-style: italic;
+	}
 }

@@ -10,7 +10,7 @@ editDate: '(optional) Date this post was last edited'
 
 ## Getting Started
 
-```tsx
+```ts
 console.log('ur mom');
 type sus = {};
 const amogus = 123;
@@ -25,6 +25,7 @@ const Component = () => {
 ```rust file=src/main.rs
 fn main() {
 	let variable: i32 = 1;
+	let boolean: bool = false;
 
 	struct MyStruct<'a, T> {
 		property: &'a str
@@ -32,7 +33,7 @@ fn main() {
 	}
 
 	impl<'a, T: Clone> MyStruct<'a, T> {
-		pub fn clone(&self) -> Self {
+		pub fn clone(&self, param: i32) -> Self {
 			self.clone()
 		}
 	}

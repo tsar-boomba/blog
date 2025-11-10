@@ -5,42 +5,19 @@ import robotsTxt from 'astro-robots-txt';
 
 // plugin in separate file don't work 🤷
 import type { Plugin } from 'unified';
-import type { Root } from 'mdast';
-import { createCssVariablesTheme, createHighlighter } from 'shiki';
-import type { Highlighter, BuiltinLanguage } from 'shiki';
+import type { Code, Root } from 'mdast';
 import { visit } from 'unist-util-visit';
 import playformCompress from '@playform/compress';
-
-const SUPPORTED_LANGS = [
-	'javascript',
-	'typescript',
-	'tsx',
-	'jsx',
-	'rust',
-	'json',
-	'toml',
-	'md',
-	'mdx',
-	'astro',
-	'sh',
-] as const satisfies BuiltinLanguage[];
+import hljs from 'highlight.js';
 
 type BlockParams = {
 	file?: string;
 	noBadge?: boolean;
 };
 
-const myTheme = createCssVariablesTheme({
-	name: 'css-variables',
-	variablePrefix: '--shiki-',
-	variableDefaults: {},
-	fontStyle: true,
-});
-
-let highlighterCache: Promise<Highlighter>;
 const parseLangRe = /(?=(?:file=(?<file>\S*))?)(?=(?:noBadge=(?<noBadge>true|false))?)/g;
 const langColorMap: {
-	[K in BuiltinLanguage]?: {
+	[k: string]: {
 		bg: string;
 		fg: string;
 	};
@@ -49,7 +26,7 @@ const langColorMap: {
 		bg: '#264de4',
 		fg: '#fff',
 	},
-	ts: {
+	typescript: {
 		bg: '#007acc',
 		fg: '#fff',
 	},
@@ -75,16 +52,21 @@ const langColorMap: {
 	},
 };
 
+const langToName: {
+	[k: string]: string;
+} = {
+	typescript: 'ts',
+	javascript: 'js',
+};
+
 export const remarkCustomCodeBlock: () => Promise<Plugin<any[], Root>> = async () => {
-	if (!highlighterCache)
-		highlighterCache = createHighlighter({
-			themes: [myTheme],
-			langs: SUPPORTED_LANGS,
+	return () => async (tree) => {
+		const codeNodes: Code[] = [];
+		visit(tree, 'code', (node) => {
+			codeNodes.push(node);
 		});
 
-	const highlighter = await highlighterCache;
-	return () => (tree) => {
-		visit(tree, 'code', (node) => {
+		for (const node of codeNodes) {
 			const rawLang = node.lang ?? 'plaintext';
 			const metaMatch = parseLangRe.exec(node.meta ?? '');
 			if (!metaMatch) {
@@ -93,23 +75,18 @@ export const remarkCustomCodeBlock: () => Promise<Plugin<any[], Root>> = async (
 				);
 			}
 			const { file, noBadge = false } = metaMatch.groups as unknown as BlockParams;
-			
-			const lang: BuiltinLanguage = (() => {
-				const lang = rawLang as BuiltinLanguage;
-				if (lang === 'typescript') return 'ts';
-				if (lang === 'javascript') return 'js';
-				if (lang === 'rs') return 'rust';
-				return lang;
+
+			const lang = (() => {
+				if (rawLang === 'ts') return 'typescript';
+				if (rawLang === 'js') return 'javascript';
+				if (rawLang === 'rs') return 'rust';
+				return rawLang;
 			})();
-			let codeHtml: string = highlighter.codeToHtml(node.value, {
-				lang,
-				theme: 'css-variables',
-			});
-			if (file) {
-				codeHtml = codeHtml.replace(`shiki`, `shiki shiki-with-file-name`);
-			}
+			let codeHtml = hljs.highlight(node.value, {
+				language: lang,
+			}).value;
 			const html = `
-				<div class='shiki-wrapper'>
+				<div class='code-wrapper ${file ? 'code-with-file-name' : ''}'>
 					${file ? `<div class='code-file-name'>${file}</div>` : ''}
 					<div style='position:relative'>
 					${
@@ -118,18 +95,18 @@ export const remarkCustomCodeBlock: () => Promise<Plugin<any[], Root>> = async (
 							class='language-badge'
 							style='background-color:${langColorMap[lang]?.bg ?? '#888'};color:${langColorMap[lang]?.fg ?? '#fff'}'
 						>
-							${lang.toUpperCase()}
+							${langToName[lang]?.toUpperCase() ?? lang.toUpperCase()}
 						</div>`
 							: ''
 					}
-						${codeHtml}
+						<div class='code-block ${lang}'>${codeHtml}</div>
 					</div>
 				</div>
 				`.trim();
 			node.value = html;
 			(node as any).type = 'html';
 			(node as any).children = [];
-		});
+		}
 	};
 };
 

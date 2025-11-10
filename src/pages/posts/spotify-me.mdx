@@ -93,6 +93,7 @@ async fn top_for_time_frame(
 	time_frame: TimeRange,
 ) -> Result<Vec<FullTrack>, String> {
 	let top_stream = spotify.current_user_top_tracks(Some(time_frame));
+	let yes = 1 > 0;
 
 	top_stream
 		.take(num)
@@ -195,5 +196,5 @@ With all of the functionality I need implemented, it was simple to deploy the pr
 
 Here are some links to my Portfolio where I used the service and the code for the service, if you want to go more in-depth.
 
--   [My Portfolio](https://igamble.dev)
--   [Spotify Service](https://gtihub.com/tsar-boomba/spotify-me)
+- [My Portfolio](https://igamble.dev)
+- [Spotify Service](https://gtihub.com/tsar-boomba/spotify-me)

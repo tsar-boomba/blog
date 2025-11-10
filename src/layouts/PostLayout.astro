@@ -66,24 +66,26 @@ const { frontmatter } = Astro.props as Props;
 		color: var(--dimmed-text-color);
 	}
 
-	.shiki {
+	.code-with-file-name {
+		border-top-left-radius: 0;
+	}
+
+	.code-block {
+		font-family: monospace;
+		margin-top: 16px;
+		margin-bottom: 16px;
 		overflow-x: auto;
 		padding: 16px;
 		border-radius: var(--radius);
 		margin: 0;
+		white-space: pre;
 		box-shadow:
 			0 0rem 0rem rgba(0, 0, 0, 0.05),
 			rgba(0, 0, 0, 0.05) 0 1.25rem 1.5625rem -0.3125rem,
 			rgba(0, 0, 0, 0.04) 0 0.625rem 0.625rem -0.3125rem;
-	}
-
-	.shiki-with-file-name {
-		border-top-left-radius: 0;
-	}
-
-	.shiki-wrapper {
-		margin-top: 16px;
-		margin-bottom: 16px;
+		color: var(--code-foreground);
+		background-color: var(--code-background);
+		font-size: 1.125rem;
 	}
 
 	.language-badge {
@@ -98,7 +100,7 @@ const { frontmatter } = Astro.props as Props;
 	}
 
 	.code-file-name {
-		background-color: var(--shiki-background);
+		background-color: var(--code-background);
 		width: fit-content;
 		font-size: 1.25rem;
 		padding: 4px 16px;
@@ -141,17 +143,37 @@ const { frontmatter } = Astro.props as Props;
 		</Box>
 	</Box>
 </BaseLayout>
-<script is:inline>
+<script>
+	// Doin this at runtime, but maybe consider moving to compile time
+	const BLUE_KEYWORDS = [
+		'let',
+		'const',
+		'type',
+		'struct',
+		'enum',
+		'interface',
+		'trait',
+		'class',
+		'function',
+	];
+
 	(() => {
-		var alphanumeric = /^\s*?[a-zA-Z][a-zA-Z0-9]*$/;
 		document.querySelectorAll('span').forEach((span) => {
 			if (
-				span.style.color === 'var(--shiki-token-keyword)' &&
-				span.textContent !== null &&
-				alphanumeric.test(span.textContent)
+				(span.className === 'hljs-keyword' ||
+					span.className === 'hljs-name' ||
+					span.className === 'hljs-punctuation') &&
+				span.textContent !== null
 			) {
-				span.style.fontStyle = 'italic';
-				span.style.fontWeight = '600';
+				if (BLUE_KEYWORDS.includes(span.textContent) && span.className !== 'hljs-name') {
+					span.style.fontStyle = 'italic';
+					span.style.color = 'var(--code-decl)';
+				} else if (span.textContent === 'self' || span.textContent === 'Self') {
+					span.style.color = 'var(--code-func)';
+				} else {
+					console.log('bolded', span);
+					span.style.fontWeight = '600';
+				}
 			}
 		});
 	})();
