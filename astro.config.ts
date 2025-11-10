@@ -86,7 +86,7 @@ export const remarkCustomCodeBlock: () => Promise<Plugin<any[], Root>> = async (
 				language: lang,
 			}).value;
 			const html = `
-				<div class='code-wrapper ${file ? 'code-with-file-name' : ''}'>
+				<div class='code-wrapper'>
 					${file ? `<div class='code-file-name'>${file}</div>` : ''}
 					<div style='position:relative'>
 					${
@@ -99,7 +99,7 @@ export const remarkCustomCodeBlock: () => Promise<Plugin<any[], Root>> = async (
 						</div>`
 							: ''
 					}
-						<div class='code-block ${lang}'>${codeHtml}</div>
+						<div class='code-block ${file ? 'code-with-file-name' : ''} ${lang}'>${codeHtml}</div>
 					</div>
 				</div>
 				`.trim();
@@ -127,7 +127,9 @@ export default defineConfig({
 		robotsTxt({
 			sitemap: true,
 		}),
-		playformCompress(),
+		playformCompress({
+			Exclude: '.*\.html',
+		}),
 	],
 	markdown: {
 		syntaxHighlight: false,
