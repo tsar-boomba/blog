@@ -9,11 +9,24 @@ import { type Code, type Root } from 'mdast';
 import { visit } from 'unist-util-visit';
 import playformCompress from '@playform/compress';
 import hljs from 'highlight.js';
+import { JSDOM } from 'jsdom';
 
 type BlockParams = {
 	file?: string;
 	noBadge?: boolean;
 };
+
+const BLUE_KEYWORDS = [
+	'let',
+	'const',
+	'type',
+	'struct',
+	'enum',
+	'interface',
+	'trait',
+	'class',
+	'function',
+];
 
 const parseLangRe = /(?=(?:file=(?<file>\S*))?)(?=(?:noBadge=(?<noBadge>true|false))?)/g;
 const langColorMap: {
@@ -86,7 +99,30 @@ const remarkCustomCodeBlock: () => Plugin<any[], Root> = () => {
 			let codeHtml = hljs.highlight(node.value, {
 				language: lang,
 			}).value;
-			const html = `
+
+			const dom = new JSDOM(codeHtml);
+
+			dom.window.document.querySelectorAll('span').forEach((span) => {
+				if (
+					(span.className === 'hljs-keyword' ||
+						span.className === 'hljs-name' ||
+						span.className === 'hljs-punctuation') &&
+					span.textContent !== null
+				) {
+					if (
+						BLUE_KEYWORDS.includes(span.textContent) &&
+						span.className !== 'hljs-name'
+					) {
+						span.classList.add('blue-keyword');
+					} else if (span.textContent === 'self' || span.textContent === 'Self') {
+						span.classList.add('green-keyword');
+					} else {
+						span.classList.add('bold-keyword');
+					}
+				}
+			});
+
+			const finalHtml = `
 				<div class='code-wrapper'>
 					${file ? `<div class='code-file-name'>${file}</div>` : ''}
 					<div style='position:relative'>
@@ -100,11 +136,11 @@ const remarkCustomCodeBlock: () => Plugin<any[], Root> = () => {
 						</div>`
 							: ''
 					}
-						<div class='code-block ${file ? 'code-with-file-name' : ''} ${lang}'>${codeHtml}</div>
+						<div class='code-block ${file ? 'code-with-file-name' : ''} ${lang}'>${dom.serialize()}</div>
 					</div>
 				</div>
 				`.trim();
-			node.value = html;
+			node.value = finalHtml;
 			(node as any).type = 'html';
 			(node as any).children = [];
 		}

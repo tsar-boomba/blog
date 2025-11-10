@@ -148,37 +148,3 @@ const { frontmatter } = Astro.props as Props;
 		</Box>
 	</Box>
 </BaseLayout>
-<script>
-	// Doin this at runtime, but maybe consider moving to compile time
-	const BLUE_KEYWORDS = [
-		'let',
-		'const',
-		'type',
-		'struct',
-		'enum',
-		'interface',
-		'trait',
-		'class',
-		'function',
-	];
-
-	(() => {
-		document.querySelectorAll('span').forEach((span) => {
-			if (
-				(span.className === 'hljs-keyword' ||
-					span.className === 'hljs-name' ||
-					span.className === 'hljs-punctuation') &&
-				span.textContent !== null
-			) {
-				if (BLUE_KEYWORDS.includes(span.textContent) && span.className !== 'hljs-name') {
-					span.style.fontStyle = 'italic';
-					span.style.color = 'var(--code-decl)';
-				} else if (span.textContent === 'self' || span.textContent === 'Self') {
-					span.style.color = 'var(--code-func)';
-				} else {
-					span.style.fontWeight = '600';
-				}
-			}
-		});
-	})();
-</script>
