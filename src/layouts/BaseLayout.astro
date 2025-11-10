@@ -4,6 +4,7 @@ import '@/styles/theme.scss';
 import Header from '@/components/Header/Header.astro';
 import Footer from '@/components/Footer/Footer.astro';
 import Stars from '@/components/Stars/Stars.astro';
+import { ClientRouter } from 'astro:transitions';
 
 export interface Props {
 	title?: string;
@@ -18,6 +19,7 @@ const { title, description, noHeader, noFooter } = Astro.props as Props;
 
 <html data-theme='dark' data-indentSize='4' lang='en'>
 	<head>
+		<ClientRouter fallback='swap' />
 		<meta charset='utf-8' />
 		<meta name='generator' content={Astro.generator} />
 		<link
@@ -64,8 +66,7 @@ const { title, description, noHeader, noFooter } = Astro.props as Props;
 								},
 							}),
 						);
-					}
-					if (mutation.attributeName === 'data-indentsize') {
+					} else if (mutation.attributeName === 'data-indentsize') {
 						window.dispatchEvent(
 							new CustomEvent('indentChange', {
 								detail: {
@@ -82,6 +83,13 @@ const { title, description, noHeader, noFooter } = Astro.props as Props;
 				childList: false,
 				attributes: true,
 				subtree: false,
+			});
+
+			document.addEventListener('astro:before-swap', (event) => {
+				event.newDocument.documentElement.dataset.theme =
+					document.documentElement.dataset.theme;
+				event.newDocument.documentElement.dataset.indentsize =
+					document.documentElement.dataset.indentsize;
 			});
 		</script>
 		<style lang='scss'>

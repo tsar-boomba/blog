@@ -1,4 +1,4 @@
-<style lang="scss">
+<style lang='scss'>
 	#theme-switch {
 		border-radius: var(--radius);
 		padding: var(--spacing-sm) var(--spacing-md);
@@ -13,15 +13,16 @@
 		}
 	}
 </style>
-<select aria-label="Theme" id="theme-switch">
-	<option value="dark">Dark</option>
-	<option value="light">Light</option>
+<select aria-label='Theme' id='theme-switch' transition:persist='theme-switch'>
+	<option value='dark'>Dark</option>
+	<option value='light'>Light</option>
 </select>
 <script is:inline>
 	function onThemeChange(e) {
-		document.querySelector('html').dataset.theme = e.target.value;
+		document.documentElement.dataset.theme = e.target.value;
 		localStorage.setItem('theme', e.target.value);
-	};
-	document.getElementById('theme-switch').value = document.querySelector('html').dataset.theme;
+		console.log('set theme data');
+	}
+	document.getElementById('theme-switch').value = document.documentElement.dataset.theme;
 	document.getElementById('theme-switch').onchange = onThemeChange;
 </script>
