@@ -7,7 +7,7 @@ publishDate: '18 November 2025'
 tags:
     - 'Rust'
     - 'Embedded'
-published: false
+published: true
 ---
 
 ## What Are Traits
@@ -39,7 +39,7 @@ fn last_char_of_string_repr(val: impl ToString) -> Option<char>
 
 ## Reducing Duplication: Trait Libraries
 
-One of the most useful properties of traits is that they are implemented _for_ types rather than types implementing them. This means that you can define your own trait that you implement for types in `std`, for example. This fact is used by various libraries to define a common interface that other libraries and applications can leverage to reduce code duplication.
+One of the most useful properties of traits is that they are implemented _for_ types rather than types implementing them. Basically, instead of declaring what traits a type implements once and that's it, you can extend existing types with new traits. You can define your own traits that you implement for types from another library. This fact is used by various libraries to define common interfaces that other libraries and applications can leverage to reduce code duplication.
 
 ### `embedded-hal` and `embedded-graphics`
 

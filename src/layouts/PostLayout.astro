@@ -166,7 +166,6 @@ const { frontmatter } = Astro.props as Props;
 			<div style={{ borderTop: '2px solid rgb(var(--primary-800))', marginBottom: '1rem' }}>
 			</div>
 			<slot />
-			{!frontmatter.noCode && <IndentSelect />}
 		</Box>
 	</Box>
 </BaseLayout>
