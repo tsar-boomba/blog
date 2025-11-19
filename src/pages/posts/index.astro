@@ -7,6 +7,7 @@ import type { PostFrontmatter } from '@/utils/types';
 const posts = Object.values(
 	import.meta.glob<{ url: string; frontmatter: PostFrontmatter }>('./**/*.mdx', { eager: true }),
 );
+posts.sort((a, b) => new Date(b.frontmatter.publishDate).valueOf() - new Date(a.frontmatter.publishDate).valueOf());
 ---
 
 <style lang='scss'>

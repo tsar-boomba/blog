@@ -29,6 +29,11 @@ const { frontmatter } = Astro.props as Props;
 		margin: 0.5rem 0;
 	}
 
+	h3 {
+		font-size: 1.5rem;
+		margin: 0.5rem 0;
+	}
+
 	a,
 	a:link,
 	a:visited {
@@ -75,12 +80,14 @@ const { frontmatter } = Astro.props as Props;
 		border-top-left-radius: 0;
 	}
 
+	$breakpoint: 750px;
 	.code-block {
 		font-family: monospace;
-		margin-top: 16px;
-		margin-bottom: 16px;
+		margin-top: var(--spacing-xl);
+		margin-bottom: var(--spacing-xl);
 		overflow-x: auto;
-		padding: 16px;
+		padding: var(--spacing-xl);
+		padding-right: 5rem;
 		border-radius: var(--radius);
 		margin: 0;
 		white-space: pre;
@@ -91,6 +98,15 @@ const { frontmatter } = Astro.props as Props;
 		color: var(--code-foreground);
 		background-color: var(--code-background);
 		font-size: 1.125rem;
+
+		@media only screen and (max-width: $breakpoint) {
+			padding: var(--spacing-md);
+			font-size: 1rem;
+		}
+	}
+
+	:root[data-theme='dark'] .code-block {
+		border: 1px solid white;
 	}
 
 	.language-badge {
@@ -102,6 +118,12 @@ const { frontmatter } = Astro.props as Props;
 		border-bottom-left-radius: var(--radius);
 		border-top-right-radius: var(--radius);
 		font-weight: 700;
+		transition: opacity 0.25s ease-in-out;
+
+		&:hover {
+			opacity: 0;
+			user-select: none;
+		}
 	}
 
 	.code-file-name {
@@ -124,7 +146,7 @@ const { frontmatter } = Astro.props as Props;
 >
 	<Box class='article-container'>
 		<Box as='article' class='article' mxw={1000} ml='auto' mr='auto'>
-			<Box as='h1' m={0}>{frontmatter.title}</Box>
+			<Box as='h1' m={0}>{frontmatter.title}{frontmatter.published ? '' : ' (UNPUBLISHED)'}</Box>
 			<Box as='p' m={0}>
 				Published: <Box as='span' class='publish-date'>
 					{frontmatter.publishDate}

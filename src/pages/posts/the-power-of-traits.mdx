@@ -1,0 +1,135 @@
+---
+layout: '@/layouts/PostLayout.astro'
+title: 'The Power of Traits'
+summary: 'Traits make embedded Rust a breeze'
+author: 'Isaiah Gamble'
+publishDate: '18 November 2025'
+tags:
+    - 'Rust'
+    - 'Embedded'
+published: false
+---
+
+## What Are Traits
+
+For those not familiar with Rust, traits are analogous to interfaces in other languages. In their simplest form, they define functions that implementors need to, well, implement! Here's an example trait:
+
+```rs
+trait ToString {
+    fn to_string(&self) -> String;
+}
+```
+
+## True Power: Trait Bounds
+
+The real power of traits, however, comes from using them to restrict, or _bound_, generic types. For example, the following function can only be called with a type that _implements_ `ToString`:
+
+```rs
+fn last_char_of_string_repr<T: ToString>(val: T) -> Option<char> {
+    let string = val.to_string();
+    string.chars().last()
+}
+```
+
+This is an equivalent shorthand if you don't need access to the generic type:
+
+```rs
+fn last_char_of_string_repr(val: impl ToString) -> Option<char>
+```
+
+## Reducing Duplication: Trait Libraries
+
+One of the most useful properties of traits is that they are implemented _for_ types rather than types implementing them. This means that you can define your own trait that you implement for types in `std`, for example. This fact is used by various libraries to define a common interface that other libraries and applications can leverage to reduce code duplication.
+
+### `embedded-hal` and `embedded-graphics`
+
+This really shines for something like embedded development where there are already well defined protocols and peripherals that are common to pretty much all microcontrollers (MCUs). We actually already have this in the [`embedded-hal`](https://github.com/rust-embedded/embedded-hal) (HAL means Hardware Abstraction Layer) crate, and its siblings which define traits for commonly used interfaces such as [SPI](https://docs.rs/embedded-hal/latest/embedded_hal/spi/trait.SpiBus.html), [I<sup>2</sup>C](https://docs.rs/embedded-hal/latest/embedded_hal/i2c/trait.I2c.html), and [PWM](https://docs.rs/embedded-hal/latest/embedded_hal/pwm/trait.SetDutyCycle.html). Thanks to this, a device driver author can just depend on `embedded-hal` and their code will work for any MCU that implements the traits. They can write something like this and it'll just work for any MCU, and integrate with the [`embedded-graphics`](https://github.com/embedded-graphics/embedded-graphics) ecosystem:
+
+```rs
+use embedded_hal::{spi::SpiBus, digital::Output};
+use embedded_graphics_core::DrawTarget;
+
+pub struct ScreenDriver<BUS, CS> {
+    spi: BUS,
+    cs: CS,
+}
+
+impl<BUS: SpiBus, CS: Output> ScreenDriver<BUS, CS> {
+    pub fn new(spi: BUS, cs: CS) -> Self {
+        Self {
+            spi,
+            cs
+        }
+    }
+}
+
+impl<BUS: SpiBus, CS: Output> DrawTarget for ScreenDriver<BUS, CS> {
+    fn draw(&mut self, data: &[u8]) {
+        // draw to device
+    }
+}
+```
+
+## Invalid States? Unrepresentable
+
+My favorite usage of traits, _by far_, is to prevent misuse of APIs. This is commonly known as "making invalid states unrepresentable", and is a core tenet of developing idiomatic Rust APIs. This is useful at all levels of software development, but I think it really shines in the embedded world.
+
+### The Peripherals Predicament
+
+Given a specific MCU, it has a certain number of physical pins and peripherals (SPI, I<sup>2</sup>C, PWM, [DMA](https://en.wikipedia.org/wiki/Direct_memory_access), etc.) built into it. These peripherals must not be used concurrently by different parts of the software since they are physical devices in the chip, and configured via memory-mapped registers. If you're coding in C or C++, then its on you to make sure you don't accidentally use a peripheral more than once on accident, or use runtime checks that will just crash your device. Luckily, it's 2025, Rust exists, and there's a better way to handle this with traits!
+
+### The Rusty Resolution (Traits)
+
+The way we solve this problem in Rust, is to leverage traits, so that it's impossible to use a misuse peripheral:
+
+```rs
+// Private to the HAL crate, so users
+// can't mess up our guarantees
+trait Sealed {}
+
+// Requires implementors to implement `Sealed`, so it
+// can only be implemented from the HAL crate
+pub trait SpiPeripheral: Sealed {}
+
+// Types representing ownership of a physical SPI peripheral
+pub struct SPI0 {
+    // Don't allow construction of this type
+    _private: (),
+}
+
+pub struct SPI1 {
+    _private: (),
+}
+
+impl Sealed for SPI0 {}
+impl Sealed for SPI1 {}
+
+impl SpiPeripheral for SPI0 {}
+impl SpiPeripheral for SPI1 {}
+// An exclusive borrow of the peripheral is also valid
+impl<'a, T: SpiPeripheral> SpiPeripheral for &'a mut T {}
+
+// More types and traits for other peripherals and pins...
+```
+
+This code is usually generated with a macro since it's pretty repetitive to write by hand. With this defined, we can now require a user to give ownership (or exclusive access through `&mut`) to a SPI peripheral before they can use it. This would be done with code similar to this (taken from [`embassy-rp`](https://docs.embassy.dev/embassy-rp/git/rp2040/spi/struct.Spi.html#method.new)):
+
+```rs
+impl<'a, T: SpiPeripheral> SpiDriver<'a, T> {
+    pub fn new(
+        peripheral: T,
+        clk: impl ClkPin<T> + 'a,
+        mosi: impl MosiPin<T> + 'a,
+        miso: impl MisoPin<T> + 'a,
+        tx_dma: impl DmaChannel,
+        rx_dma: impl DmaChannel,
+        config: Config,
+    ) -> Self
+}
+```
+
+This code actually also requires certain traits based on the [functions of pins](https://en.wikipedia.org/wiki/Serial_Peripheral_Interface#Operation) (Clk, Mosi, Miso), which means you can't accidentally use a pin that doesn't work with the physical SPI peripheral passed to the constructor. This specific constructor has everything I love about Rust all in one place. The fact that you can move the peripheral or just give an exclusive borrow, the way traits prevent misuse of _hardware_, the `impl` and trait bound shorthand, its just so perfect 🥺.
+
+## Conclusion
+
+The true power of Rust isn't memory safety. It's that it allows us to bring extra context into the code so that the compiler can check invariants for us instead of storing them in documentation or in that one senior engineer's brain. This is the power of Rust. Thanks for reading!

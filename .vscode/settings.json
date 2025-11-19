@@ -4,5 +4,6 @@
 	},
 	"markdownlint.config": {
 		"hard_tab": false
-	}
+	},
+	"cSpell.words": ["microcontrollers"]
 }
