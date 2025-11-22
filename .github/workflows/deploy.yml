@@ -33,13 +33,19 @@ jobs:
 
         steps:
             - uses: actions/checkout@v5
+            - uses: actions-rust-lang/setup-rust-toolchain@v1
+              with:
+                  components: rust-lld
+                  rustflags: '-Ctarget-cpu=native'
+            # Install my fork of rust-analyzer for the best Rust highlighting
+            - run: cargo install --git https://github.com/tsar-boomba/rust-analyzer.git --branch html-highlight-opts rust-analyzer --force
             - uses: pnpm/action-setup@v4
             - uses: actions/setup-node@v6
               with:
                   node-version: 20
                   cache: 'pnpm'
             - run: pnpm i --frozen-lockfile
-            - run: pnpm build
+            - run: RUST_ANALYZER=rust-analyzer pnpm build
             - name: Upload Artifact
               uses: actions/upload-pages-artifact@v3
               with:

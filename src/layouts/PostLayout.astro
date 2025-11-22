@@ -76,10 +76,6 @@ const { frontmatter } = Astro.props as Props;
 		color: var(--dimmed-text-color);
 	}
 
-	.code-with-file-name {
-		border-top-left-radius: 0;
-	}
-
 	$breakpoint: 750px;
 	.code-block {
 		font-family: monospace;
@@ -103,6 +99,10 @@ const { frontmatter } = Astro.props as Props;
 			padding: var(--spacing-md);
 			font-size: 1rem;
 		}
+	}
+
+	.code-with-file-name {
+		border-top-left-radius: 0;
 	}
 
 	:root[data-theme='dark'] .code-block {
@@ -135,6 +135,11 @@ const { frontmatter } = Astro.props as Props;
 		border-top-left-radius: var(--radius);
 		border-bottom-left-radius: -16px;
 	}
+
+	:root[data-theme='dark'] .code-file-name {
+		border: 1px solid white;
+		border-bottom: 1px solid transparent;
+	}
 </style>
 <BaseLayout
 	title={frontmatter.title}
@@ -146,7 +151,9 @@ const { frontmatter } = Astro.props as Props;
 >
 	<Box class='article-container'>
 		<Box as='article' class='article' mxw={1000} ml='auto' mr='auto'>
-			<Box as='h1' m={0}>{frontmatter.title}{frontmatter.published ? '' : ' (UNPUBLISHED)'}</Box>
+			<Box as='h1' m={0}
+				>{frontmatter.title}{frontmatter.published ? '' : ' (UNPUBLISHED)'}</Box
+			>
 			<Box as='p' m={0}>
 				Published: <Box as='span' class='publish-date'>
 					{frontmatter.publishDate}

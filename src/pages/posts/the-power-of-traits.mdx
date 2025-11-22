@@ -14,7 +14,7 @@ published: true
 
 For those not familiar with Rust, traits are analogous to interfaces in other languages. In their simplest form, they define functions that implementors need to, well, implement! Here's an example trait:
 
-```rs
+```rs topLevel
 trait ToString {
     fn to_string(&self) -> String;
 }
@@ -24,7 +24,7 @@ trait ToString {
 
 The real power of traits, however, comes from using them to restrict, or _bound_, generic types. For example, the following function can only be called with a type that _implements_ `ToString`:
 
-```rs
+```rs topLevel
 fn last_char_of_string_repr<T: ToString>(val: T) -> Option<char> {
     let string = val.to_string();
     string.chars().last()
@@ -33,7 +33,7 @@ fn last_char_of_string_repr<T: ToString>(val: T) -> Option<char> {
 
 This is an equivalent shorthand if you don't need access to the generic type:
 
-```rs
+```rs topLevel
 fn last_char_of_string_repr(val: impl ToString) -> Option<char>
 ```
 
@@ -45,7 +45,7 @@ One of the most useful properties of traits is that they are implemented _for_ t
 
 This really shines for something like embedded development where there are already well defined protocols and peripherals that are common to pretty much all microcontrollers (MCUs). We actually already have this in the [`embedded-hal`](https://github.com/rust-embedded/embedded-hal) (HAL means Hardware Abstraction Layer) crate, and its siblings which define traits for commonly used interfaces such as [SPI](https://docs.rs/embedded-hal/latest/embedded_hal/spi/trait.SpiBus.html), [I<sup>2</sup>C](https://docs.rs/embedded-hal/latest/embedded_hal/i2c/trait.I2c.html), and [PWM](https://docs.rs/embedded-hal/latest/embedded_hal/pwm/trait.SetDutyCycle.html). Thanks to this, a device driver author can just depend on `embedded-hal` and their code will work for any MCU that implements the traits. They can write something like this and it'll just work for any MCU, and integrate with the [`embedded-graphics`](https://github.com/embedded-graphics/embedded-graphics) ecosystem:
 
-```rs
+```rs topLevel
 use embedded_hal::{spi::SpiBus, digital::Output};
 use embedded_graphics_core::DrawTarget;
 
@@ -82,7 +82,7 @@ Given a specific MCU, it has a certain number of physical pins and peripherals (
 
 The way we solve this problem in Rust, is to leverage traits, so that it's impossible to use a misuse peripheral:
 
-```rs
+```rs topLevel
 // Private to the HAL crate, so users
 // can't mess up our guarantees
 trait Sealed {}
@@ -114,7 +114,7 @@ impl<'a, T: SpiPeripheral> SpiPeripheral for &'a mut T {}
 
 This code is usually generated with a macro since it's pretty repetitive to write by hand. With this defined, we can now require a user to give ownership (or exclusive access through `&mut`) to a SPI peripheral before they can use it. This would be done with code similar to this (taken from [`embassy-rp`](https://docs.embassy.dev/embassy-rp/git/rp2040/spi/struct.Spi.html#method.new)):
 
-```rs
+```rs topLevel
 impl<'a, T: SpiPeripheral> SpiDriver<'a, T> {
     pub fn new(
         peripheral: T,

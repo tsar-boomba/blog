@@ -10,10 +10,13 @@ import { visit } from 'unist-util-visit';
 import playformCompress from '@playform/compress';
 import hljs from 'highlight.js';
 import { JSDOM } from 'jsdom';
+import child_process from 'node:child_process';
+const spawn = child_process.spawn;
 
 type BlockParams = {
 	file?: string;
 	noBadge?: boolean;
+	topLevel?: boolean;
 };
 
 const BLUE_KEYWORDS = [
@@ -28,7 +31,8 @@ const BLUE_KEYWORDS = [
 	'function',
 ];
 
-const parseLangRe = /(?=(?:file=(?<file>\S*))?)(?=(?:noBadge=(?<noBadge>true|false))?)/g;
+const parseLangRe =
+	/(?=(?:file=(?<file>\S*))?)(?=(?:noBadge=(?<noBadge>true|false))?)(?=(?:topLevel=(?<topLevel>true|false))?)/g;
 const langColorMap: {
 	[k: string]: {
 		bg: string;
@@ -72,6 +76,48 @@ const langToName: {
 	javascript: 'js',
 };
 
+const highlightRust = async (rustCode: string, topLevel: boolean): Promise<string> => {
+	console.log('highlighting rust...');
+	const child = spawn(
+		process.env.RUST_ANALYZER ||
+			'/Users/isaiahgamble/Documents/GitHub/rust-analyzer/target/release/rust-analyzer',
+		['highlight', '--no-wrap-spans', '--no-style'],
+		{
+			stdio: 'pipe',
+		},
+	);
+
+	await new Promise((res, rej) =>
+		child.stdin.write(topLevel ? rustCode : `{${rustCode}}`, (err) => {
+			if (err) rej(err);
+			else res(undefined);
+		}),
+	);
+	await new Promise((res) => child.stdin.end(res));
+
+	return new Promise<string>((res) => {
+		let inputString = '';
+
+		child.stdout.setEncoding('utf8'); // Ensure data is treated as UTF-8 characters
+
+		child.stdout.on('data', (chunk) => {
+			inputString += chunk; // Append each data chunk to the string
+		});
+
+		child.stdout.on('end', () => {
+			// All data has been received, 'inputString' now contains the complete stdin content
+			res(
+				topLevel
+					? inputString
+					: inputString.slice(
+							'<span class="brace">}</span>'.length,
+							inputString.length - 1 - '<span class="brace">}</span>'.length,
+						),
+			);
+		});
+	});
+};
+
 /** Apply highlight.js to code blocks */
 const remarkCustomCodeBlock: () => Plugin<any[], Root> = () => {
 	return () => async (tree) => {
@@ -88,7 +134,11 @@ const remarkCustomCodeBlock: () => Plugin<any[], Root> = () => {
 					'Meta section of code fence should match format <file (optional)> <noBadge (true or false, optional)',
 				);
 			}
-			const { file, noBadge = false } = metaMatch.groups as unknown as BlockParams;
+			const {
+				file,
+				noBadge = false,
+				topLevel = false,
+			} = metaMatch.groups as unknown as BlockParams;
 
 			const lang = (() => {
 				if (rawLang === 'ts') return 'typescript';
@@ -96,9 +146,14 @@ const remarkCustomCodeBlock: () => Plugin<any[], Root> = () => {
 				if (rawLang === 'rs') return 'rust';
 				return rawLang;
 			})();
-			let codeHtml = hljs.highlight(node.value, {
-				language: lang,
-			}).value;
+			let codeHtml;
+			if (lang === 'rust') {
+				codeHtml = await highlightRust(node.value, topLevel);
+			} else {
+				codeHtml = hljs.highlight(node.value, {
+					language: lang,
+				}).value;
+			}
 
 			const dom = new JSDOM(codeHtml);
 
@@ -106,7 +161,8 @@ const remarkCustomCodeBlock: () => Plugin<any[], Root> = () => {
 				if (
 					(span.className === 'hljs-keyword' ||
 						span.className === 'hljs-name' ||
-						span.className === 'hljs-punctuation') &&
+						span.className === 'hljs-punctuation' ||
+						span.className.includes('keyword')) &&
 					span.textContent !== null
 				) {
 					if (

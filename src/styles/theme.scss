@@ -10,6 +10,89 @@ html {
 	& .bold-keyword {
 		font-weight: 600;
 	}
+
+	// Rust-Analyzer specific classes
+
+	.comment {
+		color: var(--code-comment);
+	}
+	.documentation {
+		color: var(--code-comment);
+	}
+	.intra_doc_link {
+		font-style: italic;
+	}
+	.injected {
+		opacity: 0.65;
+	}
+	.lifetime,
+	.label,
+	.struct,
+	.enum,
+	.enum_variant,
+	.field {
+		color: var(--code-foreground);
+	}
+	.function,
+	.self_type_keyword,
+	.macro,
+	.macro_bang,
+	.method {
+		color: var(--code-func);
+	}
+	.parameter,
+	.text,
+	.type,
+	.builtin_type,
+	.type_param,
+	.attribute {
+		color: var(--code-foreground);
+	}
+	.static,
+	.const,
+	.numeric_literal {
+		color: var(--code-constant);
+	}
+	.bool_literal {
+		color: var(--code-constant);
+	}
+	.proc_macro {
+		color: var(--code-foreground);
+	}
+	.derive {
+		color: var(--code-foreground);
+		font-style: italic;
+	}
+	.module {
+		color: var(--code-foreground);
+	}
+	.value_param {
+		color: var(--code-foreground);
+	}
+	.variable {
+		color: var(--code-foreground);
+	}
+	.string_literal,
+	.char_literal {
+		color: var(--code-string);
+	}
+	.escape_sequence {
+		color: var(--code-constant);
+	}
+	.operator,
+	.keyword {
+		color: var(--code-keyword);
+		font-weight: bold;
+	}
+	.negation,
+	.bitwise,
+	.comparison,
+	.format_specifier,
+	.punctuation,
+	.unsafe,
+	.colon {
+		color: var(--code-keyword);
+	}
 }
 
 html[data-theme='light'] {
@@ -46,7 +129,8 @@ html[data-theme='light'] {
 	--code-parameter: #aa0000;
 	--code-func: #bb0000;
 	--code-decl: #00a220;
-	& .hljs-literal, & .hljs-number {
+	& .hljs-literal,
+	& .hljs-number {
 		color: var(--code-constant);
 	}
 
@@ -58,11 +142,14 @@ html[data-theme='light'] {
 		color: var(--code-comment);
 	}
 
-	& .hljs-keyword, & .hljs-name, & .hljs-punctuation {
+	& .hljs-keyword,
+	& .hljs-name,
+	& .hljs-punctuation {
 		color: var(--code-keyword);
 	}
 
-	& .blue-keyword, & .hljs-params .hljs-built_in {
+	& .blue-keyword,
+	& .hljs-params .hljs-built_in {
 		color: var(--code-decl);
 		font-style: italic;
 	}
@@ -72,7 +159,7 @@ html[data-theme='light'] {
 	}
 
 	& .function_ {
-		color: var(--code-func)
+		color: var(--code-func);
 	}
 
 	& .hljs-params .hljs-attr {
@@ -114,7 +201,9 @@ html[data-theme='dark'] {
 	--code-parameter: #fd971f;
 	--code-func: #a6e22e;
 	--code-decl: #00eaee;
-	& .hljs-literal, & .hljs-number {
+
+	& .hljs-literal,
+	& .hljs-number {
 		color: var(--code-constant);
 	}
 
@@ -126,13 +215,17 @@ html[data-theme='dark'] {
 		color: var(--code-comment);
 	}
 
-	& .hljs-keyword, & .hljs-name, & .hljs-punctuation {
+	& .hljs-keyword,
+	& .hljs-name,
+	& .hljs-punctuation {
 		color: var(--code-keyword);
 	}
 
-	& .blue-keyword, & .hljs-params .hljs-built_in {
+	& .blue-keyword,
+	& .hljs-params .hljs-built_in {
 		color: var(--code-decl);
 		font-style: italic;
+		font-weight: normal;
 	}
 
 	& .green-keyword {
@@ -140,7 +233,7 @@ html[data-theme='dark'] {
 	}
 
 	& .function_ {
-		color: var(--code-func)
+		color: var(--code-func);
 	}
 
 	& .hljs-params .hljs-attr {
