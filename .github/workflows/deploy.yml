@@ -36,7 +36,6 @@ jobs:
             - uses: actions-rust-lang/setup-rust-toolchain@v1
               with:
                   rustflags: '-Ctarget-cpu=native'
-            - uses: Swatinem/rust-cache@v2
             # Install my fork of rust-analyzer for the best Rust highlighting
             - name: Install rust-analyzer fork
               uses: baptiste0928/cargo-install@v3
