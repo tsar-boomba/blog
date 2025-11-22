@@ -36,6 +36,7 @@ jobs:
             - uses: actions-rust-lang/setup-rust-toolchain@v1
               with:
                   rustflags: '-Ctarget-cpu=native'
+            - uses: Swatinem/rust-cache@v2
             # Install my fork of rust-analyzer for the best Rust highlighting
             - run: cargo install --git https://github.com/tsar-boomba/rust-analyzer.git --branch html-highlight-opts rust-analyzer --force
             - uses: pnpm/action-setup@v4
