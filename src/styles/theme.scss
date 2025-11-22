@@ -34,11 +34,13 @@ html {
 		color: var(--code-foreground);
 	}
 	.function,
+	.self_keyword,
 	.self_type_keyword,
 	.macro,
 	.macro_bang,
 	.method {
 		color: var(--code-func);
+		font-weight: normal;
 	}
 	.parameter,
 	.text,

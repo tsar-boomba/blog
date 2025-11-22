@@ -162,6 +162,7 @@ const remarkCustomCodeBlock: () => Plugin<any[], Root> = () => {
 					(span.className === 'hljs-keyword' ||
 						span.className === 'hljs-name' ||
 						span.className === 'hljs-punctuation' ||
+						span.className === 'punctuation' ||
 						span.className.includes('keyword')) &&
 					span.textContent !== null
 				) {
@@ -170,8 +171,8 @@ const remarkCustomCodeBlock: () => Plugin<any[], Root> = () => {
 						span.className !== 'hljs-name'
 					) {
 						span.classList.add('blue-keyword');
-					} else if (span.textContent === 'self' || span.textContent === 'Self') {
-						span.classList.add('green-keyword');
+					} else if (span.textContent === '&') {
+						span.classList.add('operator');
 					} else {
 						span.classList.add('bold-keyword');
 					}
