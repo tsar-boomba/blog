@@ -176,6 +176,8 @@ const remarkCustomCodeBlock: () => Plugin<any[], Root> = () => {
 					} else {
 						span.classList.add('bold-keyword');
 					}
+				} else if (span.className === 'struct' && span.textContent === 'Self') {
+					span.classList.add('self_type_keyword');
 				}
 			});
 
