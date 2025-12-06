@@ -1,0 +1,262 @@
+---
+layout: '@/layouts/PostLayout.astro'
+title: 'Highlighting Rust'
+summary: 'The best Rust highlighting with rust-analyzer'
+author: 'Isaiah Gamble'
+publishDate: '5 December 2025'
+tags: ['Rust']
+---
+
+## The Problem
+
+Highlighting code is an essential part of any technical blog, so I've naturally tried a lot of different libraries for code highlighting. A lot of them are great for most languages, but in my experience they all fall short on highlighting Rust code. In this post, I'll present the solution I came to for solving this problem.
+
+### Highlight.js
+
+Here's a block of Rust code highlighted by [highlight.js](https://highlightjs.org/):
+
+```rust hljs
+async fn top_for_time_frame(
+	spotify: &AuthCodeSpotify,
+	num: usize,
+	time_frame: TimeRange,
+) -> Result<Vec<FullTrack>, String> {
+	let top_stream = spotify.current_user_top_tracks(Some(time_frame));
+	let yes = 1 > 0;
+
+	top_stream
+		.take(num)
+		.try_collect()
+		.await
+		.map_err(|e| e.to_string())
+}
+
+pub struct ScreenDriver<BUS, CS> {
+    spi: BUS,
+    cs: CS,
+}
+
+impl<BUS: SpiBus, CS: Output> ScreenDriver<BUS, CS> {
+    pub fn new(spi: BUS, cs: CS) -> Self {
+        Self {
+            spi,
+            cs
+        }
+    }
+}
+
+impl<BUS: SpiBus, CS: Output> DrawTarget for ScreenDriver<BUS, CS> {
+    fn draw(&mut self, data: &[u8]) {
+        // draw to device
+    }
+}
+```
+
+This result is ok, and the best out of all the options I've tried for Node.js. Highlight.js also seems to be the most popular library for client side/Node.js highlighting
+
+### `rust-analyzer` Highlighting
+
+And here's one highlighted by my `rust-analyzer` based solution:
+
+```rust topLevel
+async fn top_for_time_frame(
+	spotify: &AuthCodeSpotify,
+	num: usize,
+	time_frame: TimeRange,
+) -> Result<Vec<FullTrack>, String> {
+	let top_stream = spotify.current_user_top_tracks(Some(time_frame));
+	let yes = 1 > 0;
+
+	top_stream
+		.take(num)
+		.try_collect()
+		.await
+		.map_err(|e| e.to_string())
+}
+
+pub struct ScreenDriver<BUS, CS> {
+    spi: BUS,
+    cs: CS,
+}
+
+impl<BUS: SpiBus, CS: Output> ScreenDriver<BUS, CS> {
+    pub fn new(spi: BUS, cs: CS) -> Self {
+        Self {
+            spi,
+            cs
+        }
+    }
+}
+
+impl<BUS: SpiBus, CS: Output> DrawTarget for ScreenDriver<BUS, CS> {
+    fn draw(&mut self, data: &[u8]) {
+        // draw to device
+    }
+}
+```
+
+I much prefer this highlighting to the first. Everyone has their own preferences for highlighting, but either way, using `rust-analyzer` allows for much more granular control over the highlighted code thanks to its enhanced understanding over more general highlighters.
+
+## The Naive Solution: `rust-analyzer` LSP Client
+
+When I first decided I wanted better highlighting for Rust, I immediately knew `rust-analyzer` had to be the way to go. Its [the official Language Server Protocol (LSP) server](https://github.com/rust-lang/rust-analyzer) for the  Rust programming language.
+
+Since `rust-analyzer` is an LSP server, my first idea was to make an LSP client, like an IDE, that would request the powerful [semantic highlighting](https://github.com/microsoft/vscode/wiki/Semantic-Highlighting-Overview) tokens from a running `rust-analyzer` server. I started down this path, but quickly realized that implementing a LSP client is very complex, and super overkill for this task. During my research for this, I was playing with the `rust-analyzer` CLI and found out that it has a `highlight` subcommand.
+
+## True Route: `rust-analyzer highlight`
+
+According to the help text, the `highlight` subcommand will: "Highlight stdin as html". In practice, it will take a code block like:
+
+```rust topLevel
+fn main() {
+    let x = Person {};
+}
+```
+
+and output the following HTML:
+
+```html
+<style>
+body                { margin: 0; }
+pre                 { color: #DCDCCC; background: #3F3F3F; font-size: 22px; padding: 0.4em; }
+
+.lifetime           { color: #DFAF8F; font-style: italic; }
+.label              { color: #DFAF8F; font-style: italic; }
+.comment            { color: #7F9F7F; }
+.documentation      { color: #629755; }
+.intra_doc_link     { font-style: italic; }
+.injected           { opacity: 0.65 ; }
+.struct, .enum      { color: #7CB8BB; }
+.enum_variant       { color: #BDE0F3; }
+.string_literal     { color: #CC9393; }
+.field              { color: #94BFF3; }
+.function           { color: #93E0E3; }
+.parameter          { color: #94BFF3; }
+.text               { color: #DCDCCC; }
+.type               { color: #7CB8BB; }
+.builtin_type       { color: #8CD0D3; }
+.type_param         { color: #DFAF8F; }
+.attribute          { color: #94BFF3; }
+.numeric_literal    { color: #BFEBBF; }
+.bool_literal       { color: #BFE6EB; }
+.macro              { color: #94BFF3; }
+.proc_macro         { color: #94BFF3; text-decoration: underline; }
+.derive             { color: #94BFF3; font-style: italic; }
+.module             { color: #AFD8AF; }
+.value_param        { color: #DCDCCC; }
+.variable           { color: #DCDCCC; }
+.format_specifier   { color: #CC696B; }
+.mutable            { text-decoration: underline; }
+.escape_sequence    { color: #94BFF3; }
+.keyword            { color: #F0DFAF; font-weight: bold; }
+.control            { font-style: italic; }
+.reference          { font-style: italic; font-weight: bold; }
+.const              { font-weight: bolder; }
+.unsafe             { color: #BC8383; }
+
+.invalid_escape_sequence { color: #FC5555; text-decoration: wavy underline; }
+.unresolved_reference    { color: #FC5555; text-decoration: wavy underline; }
+</style>
+<pre><code><span class="keyword">fn</span> <span class="function declaration">main</span><span class="parenthesis">(</span><span class="parenthesis">)</span> <span class="brace">{</span>
+    <span class="keyword">let</span> <span class="variable declaration">x</span> <span class="operator">=</span> <span class="unresolved_reference">Person</span> <span class="brace">{</span><span class="brace">}</span><span class="semicolon">;</span>
+<span class="brace">}</span>
+</code></pre>
+```
+
+### Some CLI Issues
+
+It prepends some default styles in a `style` tag. The actual highlighted code is all the way at the end already wrapped in a `pre` and `code` tag. For my purposes, I only what the spans with classes reflecting the semantic token type. This command provides that along with a bunch of other garbage. The `style`, `pre`, and `code` tags can be easily removed. What's a little bit harder is to get `rust-analyzer` to ignore unresolved references, and pretend they're resolved. The `highlight` subcommand only has one CLI argument, `--rainbow`, which turns on "rainbow highlighting of identifiers". This is not useful. At all. This calls for changes to `rust-analyzer` itself.
+
+### The Forking
+
+To solve these issues, I [forked `rust-analyzer`](https://github.com/tsar-boomba/rust-analyzer) and added a few features for my use cases:
+
+1. A new CLI option to remove the `style` tag
+1. A new CLI option to remove the `pre` and `code` tags
+1. Hard-coded the highlighter config to ignore unresolved references and just tag them as they are
+    + In retrospect, this should be a CLI option too. If I upstream these changes I'll definitely add that
+
+With that, done all thats left is to integrate it into my blog's [remark](https://github.com/remarkjs/remark)  pipeline.
+
+### Integration With remark
+
+I'm was already using custom code for my code highlighting needs, so it wasn't hard to slot in my `rust-analyzer` fork for Rust code blocks.
+
+```ts
+import child_process from 'node:child_process';
+const spawn = child_process.spawn;
+
+async function highlightRust(rustCode: string, topLevel: boolean): Promise<string> {
+	console.log('highlighting rust...');
+	const child = spawn(
+		process.env.RUST_ANALYZER ||
+			'/forks/rust-analyzer/target/release', // local fork CLI
+		['highlight', '--no-wrap-spans', '--no-style'],
+		{
+			stdio: 'pipe',
+		},
+	);
+
+    // Write the code to highlight to stdin of rust-analyzer
+	await new Promise((res, rej) =>
+        // Need to add braces for code snippets in a block (not top level)
+		child.stdin.write(topLevel ? rustCode : `{${rustCode}}`, (err) => {
+			if (err) rej(err);
+			else res(undefined);
+		}),
+	);
+
+    // Close stdin
+	await new Promise((res) => child.stdin.end(res));
+
+	return new Promise<string>((res) => {
+		let inputString = '';
+
+		// Ensure data is treated as UTF-8 characters
+		child.stdout.setEncoding('utf8');
+
+		child.stdout.on('data', (chunk) => {
+			// Append each data chunk to the string
+			inputString += chunk;
+		});
+
+		child.stdout.on('end', () => {
+			// All data has been received, 'inputString' now contains the complete stdin content
+			res(
+				topLevel
+					? inputString
+                    // For code in a block, remove the braces we added earlier
+					: inputString.slice(
+							'<span class="brace">}</span>'.length,
+							inputString.length - 1 - '<span class="brace">}</span>'.length,
+						),
+			);
+		});
+	});
+};
+```
+
+When the language for a block is Rust, we call this function instead of the usual highlight.js function. It just spawns a `rust-analyzer` process with the `highlight`, `--no-wrap-spans`, and `--no-style` arguments. From there the code to be highlighted in written to stdin of the new process. We then read the highlighted code from stdout and return it.
+
+### Integration With GitHub Actions
+
+Now that Astro is ready, we just need to setup GitHub actions to use my `rust-analyzer` fork and properly configure the build. To that, we just need to add the following steps to thee build:
+
+```yaml
+- uses: actions-rust-lang/setup-rust-toolchain@v1
+	with:
+		rustflags: '-Ctarget-cpu=native'
+# Install my fork of rust-analyzer for the best Rust highlighting
+- name: Install rust-analyzer fork
+	uses: baptiste0928/cargo-install@v3
+	with:
+		crate: rust-analyzer
+		git: https://github.com/tsar-boomba/rust-analyzer.git
+		branch: html-highlight-opts
+```
+
+From here, all we have to do is run the build as `RUST_ANALYZER=rust-analyzer pnpm build`.
+
+## Conclusion
+
+The best code highlighting on any blog can be achieved through a custom `rust-analyzer` fork. Pretty cool, right!?
