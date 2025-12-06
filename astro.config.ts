@@ -15,8 +15,9 @@ const spawn = child_process.spawn;
 
 type BlockParams = {
 	file?: string;
-	noBadge?: boolean;
-	topLevel?: boolean;
+	noBadge?: 'noBadge' | '';
+	topLevel?: 'topLevel' | '';
+	hljs?: 'hljs' | '';
 };
 
 const BLUE_KEYWORDS = [
@@ -32,7 +33,7 @@ const BLUE_KEYWORDS = [
 ];
 
 const parseLangRe =
-	/(?=(?:file=(?<file>\S*))?)(?=(?:noBadge=(?<noBadge>true|false))?)(?=(?:topLevel=(?<topLevel>true|false))?)/g;
+	/(?=(?:file=(?<file>\S*))?)(?=(?<noBadge>noBadge)?)(?=(?<topLevel>topLevel)?)(?=(?<hljs>hljs)?)/g;
 const langColorMap: {
 	[k: string]: {
 		bg: string;
@@ -65,6 +66,14 @@ const langColorMap: {
 	},
 	toml: {
 		bg: '#9c4221',
+		fg: '#fff',
+	},
+	html: {
+		bg: '#F54927',
+		fg: '#fff',
+	},
+	yaml: {
+		bg: '#cb171e',
 		fg: '#fff',
 	},
 };
@@ -136,8 +145,9 @@ const remarkCustomCodeBlock: () => Plugin<any[], Root> = () => {
 			}
 			const {
 				file,
-				noBadge = false,
-				topLevel = false,
+				noBadge = '',
+				topLevel = '',
+				hljs: forceHljs = '',
 			} = metaMatch.groups as unknown as BlockParams;
 
 			const lang = (() => {
@@ -146,9 +156,9 @@ const remarkCustomCodeBlock: () => Plugin<any[], Root> = () => {
 				if (rawLang === 'rs') return 'rust';
 				return rawLang;
 			})();
-			let codeHtml;
-			if (lang === 'rust') {
-				codeHtml = await highlightRust(node.value, topLevel);
+			let codeHtml: string;
+			if (lang === 'rust' && !forceHljs) {
+				codeHtml = await highlightRust(node.value, !!topLevel);
 			} else {
 				codeHtml = hljs.highlight(node.value, {
 					language: lang,

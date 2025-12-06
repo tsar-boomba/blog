@@ -33,15 +33,6 @@ html {
 	.field {
 		color: var(--code-foreground);
 	}
-	.function,
-	.self_keyword,
-	.self_type_keyword,
-	.macro,
-	.macro_bang,
-	.method {
-		color: var(--code-func);
-		font-weight: normal;
-	}
 	.parameter,
 	.text,
 	.type,
@@ -54,6 +45,15 @@ html {
 	.const,
 	.numeric_literal {
 		color: var(--code-constant);
+	}
+	.function,
+	.self_keyword,
+	.self_type_keyword,
+	.macro,
+	.macro_bang,
+	.method {
+		color: var(--code-func);
+		font-weight: normal;
 	}
 	.bool_literal {
 		color: var(--code-constant);
@@ -82,7 +82,8 @@ html {
 		color: var(--code-constant);
 	}
 	.operator,
-	.keyword {
+	.keyword,
+	.yaml .hljs-attr {
 		color: var(--code-keyword);
 		font-weight: bold;
 	}
@@ -94,6 +95,46 @@ html {
 	.unsafe,
 	.colon {
 		color: var(--code-keyword);
+	}
+
+	& .hljs-literal,
+	& .hljs-number {
+		color: var(--code-constant);
+	}
+
+	& .hljs-string {
+		color: var(--code-string);
+	}
+
+	& .hljs-comment {
+		color: var(--code-comment);
+	}
+
+	& .hljs-keyword,
+	& .hljs-name,
+	& .hljs-punctuation {
+		color: var(--code-keyword);
+	}
+
+	& .blue-keyword,
+	& .hljs-built_in {
+		color: var(--code-decl);
+		font-style: italic;
+		font-weight: normal;
+	}
+
+	& .green-keyword {
+		color: var(--code-func);
+	}
+
+	& .function_,
+	& .class_ {
+		color: var(--code-func);
+	}
+
+	& .hljs-params .hljs-attr {
+		color: var(--code-parameter);
+		font-style: italic;
 	}
 }
 
@@ -131,42 +172,6 @@ html[data-theme='light'] {
 	--code-parameter: #aa0000;
 	--code-func: #bb0000;
 	--code-decl: #00a220;
-	& .hljs-literal,
-	& .hljs-number {
-		color: var(--code-constant);
-	}
-
-	& .hljs-string {
-		color: var(--code-string);
-	}
-
-	& .hljs-comment {
-		color: var(--code-comment);
-	}
-
-	& .hljs-keyword,
-	& .hljs-name,
-	& .hljs-punctuation {
-		color: var(--code-keyword);
-	}
-
-	& .blue-keyword,
-	& .hljs-params .hljs-built_in {
-		color: var(--code-decl);
-		font-style: italic;
-	}
-
-	& .green-keyword {
-		color: var(--code-func);
-	}
-
-	& .function_ {
-		color: var(--code-func);
-	}
-
-	& .hljs-params .hljs-attr {
-		color: var(--code-parameter);
-	}
 }
 
 html[data-theme='dark'] {
@@ -203,43 +208,4 @@ html[data-theme='dark'] {
 	--code-parameter: #fd971f;
 	--code-func: #a6e22e;
 	--code-decl: #00eaee;
-
-	& .hljs-literal,
-	& .hljs-number {
-		color: var(--code-constant);
-	}
-
-	& .hljs-string {
-		color: var(--code-string);
-	}
-
-	& .hljs-comment {
-		color: var(--code-comment);
-	}
-
-	& .hljs-keyword,
-	& .hljs-name,
-	& .hljs-punctuation {
-		color: var(--code-keyword);
-	}
-
-	& .blue-keyword,
-	& .hljs-params .hljs-built_in {
-		color: var(--code-decl);
-		font-style: italic;
-		font-weight: normal;
-	}
-
-	& .green-keyword {
-		color: var(--code-func);
-	}
-
-	& .function_ {
-		color: var(--code-func);
-	}
-
-	& .hljs-params .hljs-attr {
-		color: var(--code-parameter);
-		font-style: italic;
-	}
 }
