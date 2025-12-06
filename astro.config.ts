@@ -76,6 +76,10 @@ const langColorMap: {
 		bg: '#cb171e',
 		fg: '#fff',
 	},
+	shell: {
+		bg: '#20C20E',
+		fg: '#fff',
+	},
 };
 
 const langToName: {

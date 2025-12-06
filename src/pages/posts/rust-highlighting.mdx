@@ -5,6 +5,7 @@ summary: 'The best Rust highlighting with rust-analyzer'
 author: 'Isaiah Gamble'
 publishDate: '5 December 2025'
 tags: ['Rust']
+published: true
 ---
 
 ## The Problem
@@ -180,7 +181,7 @@ With that, done all thats left is to integrate it into my blog's [remark](https:
 
 ### Integration With remark
 
-I'm was already using custom code for my code highlighting needs, so it wasn't hard to slot in my `rust-analyzer` fork for Rust code blocks.
+I was already using custom code for my code highlighting needs, so it wasn't hard to slot in my `rust-analyzer` fork for Rust code blocks.
 
 ```ts
 import child_process from 'node:child_process';
@@ -240,7 +241,7 @@ When the language for a block is Rust, we call this function instead of the usua
 
 ### Integration With GitHub Actions
 
-Now that Astro is ready, we just need to setup GitHub actions to use my `rust-analyzer` fork and properly configure the build. To that, we just need to add the following steps to thee build:
+Now that Astro is ready, we just need to setup GitHub actions to use my `rust-analyzer` fork and properly configure the build. To that, we just need to add the following steps to the build:
 
 ```yaml
 - uses: actions-rust-lang/setup-rust-toolchain@v1
@@ -255,7 +256,11 @@ Now that Astro is ready, we just need to setup GitHub actions to use my `rust-an
 		branch: html-highlight-opts
 ```
 
-From here, all we have to do is run the build as `RUST_ANALYZER=rust-analyzer pnpm build`.
+From here, all we have to do is run the build as:
+
+```shell
+RUST_ANALYZER=rust-analyzer pnpm build
+```
 
 ## Conclusion
 
