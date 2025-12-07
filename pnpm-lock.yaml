@@ -24,6 +24,9 @@ importers:
       '@playform/compress':
         specifier: 0.2.0
         version: 0.2.0(@types/node@24.10.1)(rollup@4.53.3)(sass@1.93.3)(typescript@5.9.3)(yaml@2.8.2)
+      '@supercharge/promise-pool':
+        specifier: ^3.2.0
+        version: 3.2.0
       '@types/jsdom':
         specifier: ^27.0.0
         version: 27.0.0
@@ -1236,6 +1239,10 @@ packages:
 
   '@shikijs/vscode-textmate@10.0.2':
     resolution: {integrity: sha512-83yeghZ2xxin3Nj8z1NMd/NCuca+gsYXswywDy5bHvwlWL8tpTQmzGeUuHd9FC3E/SBEMvzJRwWEOz5gGes9Qg==}
+
+  '@supercharge/promise-pool@3.2.0':
+    resolution: {integrity: sha512-pj0cAALblTZBPtMltWOlZTQSLT07jIaFNeM8TWoJD1cQMgDB9mcMlVMoetiB35OzNJpqQ2b+QEtwiR9f20mADg==}
+    engines: {node: '>=8'}
 
   '@swc/helpers@0.5.17':
     resolution: {integrity: sha512-5IKx/Y13RsYd+sauPb2x+U/xZikHjolzfuDgTAl/Tdf3Q8rslRvC19NKDLgAJQ6wsqADk10ntlv08nPFw/gO/A==}
@@ -5578,6 +5585,8 @@ snapshots:
       '@types/hast': 3.0.4
 
   '@shikijs/vscode-textmate@10.0.2': {}
+
+  '@supercharge/promise-pool@3.2.0': {}
 
   '@swc/helpers@0.5.17':
     dependencies:

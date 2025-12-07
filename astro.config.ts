@@ -10,6 +10,7 @@ import { visit } from 'unist-util-visit';
 import playformCompress from '@playform/compress';
 import hljs from 'highlight.js';
 import { JSDOM } from 'jsdom';
+import { PromisePool } from '@supercharge/promise-pool';
 import child_process from 'node:child_process';
 const spawn = child_process.spawn;
 
@@ -139,63 +140,65 @@ const remarkCustomCodeBlock: () => Plugin<any[], Root> = () => {
 			codeNodes.push(node);
 		});
 
-		for (const node of codeNodes) {
-			const rawLang = node.lang ?? 'plaintext';
-			const metaMatch = parseLangRe.exec(node.meta ?? '');
-			if (!metaMatch) {
-				return console.warn(
-					'Meta section of code fence should match format <file (optional)> <noBadge (true or false, optional)',
-				);
-			}
-			const {
-				file,
-				noBadge = '',
-				topLevel = '',
-				hljs: forceHljs = '',
-			} = metaMatch.groups as unknown as BlockParams;
-
-			const lang = (() => {
-				if (rawLang === 'ts') return 'typescript';
-				if (rawLang === 'js') return 'javascript';
-				if (rawLang === 'rs') return 'rust';
-				return rawLang;
-			})();
-			let codeHtml: string;
-			if (lang === 'rust' && !forceHljs) {
-				codeHtml = await highlightRust(node.value, !!topLevel);
-			} else {
-				codeHtml = hljs.highlight(node.value, {
-					language: lang,
-				}).value;
-			}
-
-			const dom = new JSDOM(codeHtml);
-
-			dom.window.document.querySelectorAll('span').forEach((span) => {
-				if (
-					(span.className === 'hljs-keyword' ||
-						span.className === 'hljs-name' ||
-						span.className === 'hljs-punctuation' ||
-						span.className === 'punctuation' ||
-						span.className.includes('keyword')) &&
-					span.textContent !== null
-				) {
-					if (
-						BLUE_KEYWORDS.includes(span.textContent) &&
-						span.className !== 'hljs-name'
-					) {
-						span.classList.add('blue-keyword');
-					} else if (span.textContent === '&') {
-						span.classList.add('operator');
-					} else {
-						span.classList.add('bold-keyword');
-					}
-				} else if (span.className === 'struct' && span.textContent === 'Self') {
-					span.classList.add('self_type_keyword');
+		const {} = await PromisePool.withConcurrency(8)
+			.for(codeNodes)
+			.process(async (node) => {
+				const rawLang = node.lang ?? 'plaintext';
+				const metaMatch = parseLangRe.exec(node.meta ?? '');
+				if (!metaMatch) {
+					return console.warn(
+						'Meta section of code fence should match format <file (optional)> <noBadge (true or false, optional)',
+					);
 				}
-			});
+				const {
+					file,
+					noBadge = '',
+					topLevel = '',
+					hljs: forceHljs = '',
+				} = metaMatch.groups as unknown as BlockParams;
 
-			const finalHtml = `
+				const lang = (() => {
+					if (rawLang === 'ts') return 'typescript';
+					if (rawLang === 'js') return 'javascript';
+					if (rawLang === 'rs') return 'rust';
+					return rawLang;
+				})();
+				let codeHtml: string;
+				if (lang === 'rust' && !forceHljs) {
+					codeHtml = await highlightRust(node.value, !!topLevel);
+				} else {
+					codeHtml = hljs.highlight(node.value, {
+						language: lang,
+					}).value;
+				}
+
+				const dom = new JSDOM(codeHtml);
+
+				dom.window.document.querySelectorAll('span').forEach((span) => {
+					if (
+						(span.className === 'hljs-keyword' ||
+							span.className === 'hljs-name' ||
+							span.className === 'hljs-punctuation' ||
+							span.className === 'punctuation' ||
+							span.className.includes('keyword')) &&
+						span.textContent !== null
+					) {
+						if (
+							BLUE_KEYWORDS.includes(span.textContent) &&
+							span.className !== 'hljs-name'
+						) {
+							span.classList.add('blue-keyword');
+						} else if (span.textContent === '&') {
+							span.classList.add('operator');
+						} else {
+							span.classList.add('bold-keyword');
+						}
+					} else if (span.className === 'struct' && span.textContent === 'Self') {
+						span.classList.add('self_type_keyword');
+					}
+				});
+
+				const finalHtml = `
 				<div class='code-wrapper'>
 					${file ? `<div class='code-file-name'>${file}</div>` : ''}
 					<div style='position:relative'>
@@ -213,10 +216,10 @@ const remarkCustomCodeBlock: () => Plugin<any[], Root> = () => {
 					</div>
 				</div>
 				`.trim();
-			node.value = finalHtml;
-			(node as any).type = 'html';
-			(node as any).children = [];
-		}
+				node.value = finalHtml;
+				(node as any).type = 'html';
+				(node as any).children = [];
+			});
 	};
 };
 
