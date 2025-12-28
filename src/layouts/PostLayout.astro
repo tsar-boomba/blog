@@ -184,7 +184,6 @@ const { frontmatter } = Astro.props as Props;
 		// TODO: og:image
 		{ name: 'author', content: frontmatter.author },
 		{ name: 'keywords', content: ['Programming', ...frontmatter.tags].join(', ') },
-		{ name: 'description', content: frontmatter.summary },
 		{ name: 'fediverse:creator', content: '@igamble@mastodon.social' },
 	]}
 >

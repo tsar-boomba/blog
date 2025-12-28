@@ -5,7 +5,7 @@ summary: 'Rust, Embassy, LoRa. What else did you expect?'
 author: 'Isaiah Gamble'
 publishDate: '29 December 2025'
 tags: ['Rust', 'Embedded']
-published: false
+published: true
 ---
 
 ## Prelude
@@ -92,7 +92,7 @@ Say the program wants to send a string of 64 bytes. It will first generate a ran
 3. 16-byte tag
 4. 16-byte nonce
 
-Considering the max packet size of 222-bytes with out modulation parameters, this structure allows for 186 bytes of encrypted data per message. More than enough for our use-case.
+Considering the max packet size of 222-bytes with our modulation parameters, this structure allows for 186 bytes of encrypted data per message. More than enough for our use case.
 
 On the receiving side, the program first checks that the first 4 bytes of the packet match the specified magic number before anything else. From there, it will split out the ciphertext, nonce, and tag from the packet. With these, it then unencrypts the ciphertext in-place using the encryption key, tag, and nonce.
 

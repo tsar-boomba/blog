@@ -100,7 +100,7 @@ I much prefer this highlighting to the first. Everyone has their own preferences
 
 ## The Naive Solution: `rust-analyzer` LSP Client
 
-When I first decided I wanted better highlighting for Rust, I immediately knew `rust-analyzer` had to be the way to go. Its [the official Language Server Protocol (LSP) server](https://github.com/rust-lang/rust-analyzer) for the  Rust programming language.
+When I first decided I wanted better highlighting for Rust, I immediately knew `rust-analyzer` had to be the way to go. It's [the official Language Server Protocol (LSP) server](https://github.com/rust-lang/rust-analyzer) for the  Rust programming language.
 
 Since `rust-analyzer` is an LSP server, my first idea was to make an LSP client, like an IDE, that would request the powerful [semantic highlighting](https://github.com/microsoft/vscode/wiki/Semantic-Highlighting-Overview) tokens from a running `rust-analyzer` server. I started down this path, but quickly realized that implementing a LSP client is very complex, and super overkill for this task. During my research for this, I was playing with the `rust-analyzer` CLI and found out that it has a `highlight` subcommand.
 
@@ -264,4 +264,4 @@ RUST_ANALYZER=rust-analyzer pnpm build
 
 ## Conclusion
 
-The best code highlighting on any blog can be achieved through a custom `rust-analyzer` fork. Pretty cool, right!?
+The best code highlighting on any blog can be achieved through a custom `rust-analyzer` fork. Pretty cool, right? Thanks for reading. If you have any questions, reach out on [Bluesky](https://bsky.app/profile/igamble.dev) or [Mastodon](https://mastodon.social/@igamble)!
