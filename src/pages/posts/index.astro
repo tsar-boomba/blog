@@ -7,18 +7,20 @@ import type { PostFrontmatter } from '@/utils/types';
 const posts = Object.values(
 	import.meta.glob<{ url: string; frontmatter: PostFrontmatter }>('./**/*.mdx', { eager: true }),
 );
-posts.sort((a, b) => new Date(b.frontmatter.publishDate).valueOf() - new Date(a.frontmatter.publishDate).valueOf());
+posts.sort(
+	(a, b) =>
+		new Date(b.frontmatter.publishDate).valueOf() -
+		new Date(a.frontmatter.publishDate).valueOf(),
+);
 ---
 
-<style lang='scss'>
-	
-</style>
+<style lang='scss'></style>
 <BaseLayout title='Isaiah Gamble Blog | Posts' description="Posts on Isaiah Gamble's blog.">
 	<h1>Posts</h1>
 	<Group gap='1rem' justify='center' align='center'
 		>{
 			posts
-				.filter(({ frontmatter }) => frontmatter.published === true || import.meta.env.DEV)
+				.filter(({ frontmatter }) => frontmatter.published || import.meta.env.DEV)
 				.map((post) => (
 					<Card
 						as='a'

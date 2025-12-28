@@ -3,18 +3,9 @@ import Box from '@/components/Box.astro';
 import IndentSelect from '@/components/IndentSelect/IndentSelect.astro';
 import type { PostFrontmatter } from '@/utils/types';
 import BaseLayout from './BaseLayout.astro';
+import { MDXLayoutProps } from 'astro';
 
-interface Props {
-	frontmatter: PostFrontmatter;
-	headings: {
-		depth: 1 | 2 | 3 | 4 | 5 | 6;
-		/** id of heading element on page */
-		slug: string;
-		text: string;
-	}[];
-	file: string;
-	url: string;
-}
+type Props = MDXLayoutProps<PostFrontmatter>;
 
 const { frontmatter } = Astro.props as Props;
 ---
@@ -32,6 +23,16 @@ const { frontmatter } = Astro.props as Props;
 	h3 {
 		font-size: 1.5rem;
 		margin: 0.5rem 0;
+	}
+
+	h4 {
+		font-size: 1.25rem;
+		margin: 0.5rem 0;
+	}
+
+	h5 {
+		font-size: 1.125rem;
+		margin: 0.25rem 0;
 	}
 
 	a,
@@ -59,6 +60,35 @@ const { frontmatter } = Astro.props as Props;
 		background-color: var(--shiki-background);
 		padding: 2px;
 		border-radius: var(--radius);
+	}
+
+	video {
+		width: 100%;
+		max-height: 40vh;
+	}
+
+	figure {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		margin: 0;
+	}
+
+	img {
+		width: auto;
+		max-height: 50vh;
+	}
+
+	figure > p {
+		margin: 0;
+		line-height: 0;
+	}
+
+	p.caption, figcaption {
+		font-size: 1.125rem;
+		line-height: 1.5;
+		text-align: center;
+		margin: 0.5rem 0;
 	}
 
 	.article-container {
@@ -148,6 +178,7 @@ const { frontmatter } = Astro.props as Props;
 	metas={[
 		{ name: 'author', content: frontmatter.author },
 		{ name: 'keywords', content: ['Programming', ...frontmatter.tags].join(', ') },
+		{ name: 'fediverse:creator', content: '@igamble@mastodon.social' },
 	]}
 >
 	<Box class='article-container'>

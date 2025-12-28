@@ -1,5 +1,5 @@
 ---
-
+import Flex from '../Flex.astro';
 ---
 
 <style lang='scss'>
@@ -67,7 +67,9 @@
 		font-size: 1.25rem;
 	}
 
-	a, a:visited {
+	a,
+	a:link,
+	a:visited {
 		color: white;
 
 		&:hover {
@@ -78,5 +80,9 @@
 <div class='curve'></div>
 <footer class='root'>
 	<div>Made with 🧡 by Isaiah Gamble</div>
-	<a href='https://igamble.dev'>More of my work</a>
+	<Flex>
+		<a href='https://igamble.dev'>More of my work</a>
+		<a rel='me' href='https://mastodon.social/@igamble'>Mastodon</a>
+		<a href='https://bsky.app/profile/igamble.dev'>Bluesky</a>
+	</Flex>
 </footer>

@@ -5,7 +5,7 @@ export type PostFrontmatter = {
 	publishDate: string;
 	tags: string[];
 	editDate?: string;
-	published?: true;
+	published?: false;
 	noCode?: true;
 };
 
