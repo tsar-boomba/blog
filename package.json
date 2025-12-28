@@ -39,6 +39,7 @@
 		"postcss-preset-env": "10.4.0",
 		"prettier": "3.6.2",
 		"sass": "1.93.3",
+		"sharp": "^0.34.5",
 		"svgo": "4.0.0",
 		"typescript": "5.9.3",
 		"unified": "11.0.5",
