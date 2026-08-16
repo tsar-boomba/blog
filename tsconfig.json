@@ -13,9 +13,8 @@
 		"noEmit": true,
 		// Enable strict type checking.
 		"strict": true,
-		"baseUrl": ".",
 		"paths": {
-			"@/*": ["src/*"]
+			"@/*": ["./src/*"]
 		},
 		"jsx": "react-jsx",
 		"jsxImportSource": "preact"

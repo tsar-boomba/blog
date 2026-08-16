@@ -94,7 +94,7 @@ const highlightRust = async (rustCode: string, topLevel: boolean): Promise<strin
 	console.log('highlighting rust...');
 	const child = spawn(
 		process.env.RUST_ANALYZER ||
-			'/Users/isaiahgamble/Documents/GitHub/rust-analyzer/target/release/rust-analyzer',
+			'../rust-analyzer/target/release/rust-analyzer',
 		['highlight', '--no-wrap-spans', '--no-style'],
 		{
 			stdio: 'pipe',
