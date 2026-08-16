@@ -94,7 +94,7 @@ const highlightRust = async (rustCode: string, topLevel: boolean): Promise<strin
 	console.log('highlighting rust...');
 	const child = spawn(
 		process.env.RUST_ANALYZER ||
-			'../rust-analyzer/target/release/rust-analyzer',
+		'../rust-analyzer/target/release/rust-analyzer',
 		['highlight', '--no-wrap-spans', '--no-style'],
 		{
 			stdio: 'pipe',
@@ -109,24 +109,33 @@ const highlightRust = async (rustCode: string, topLevel: boolean): Promise<strin
 	);
 	await new Promise((res) => child.stdin.end(res));
 
-	return new Promise<string>((res) => {
-		let inputString = '';
+	return new Promise<string>((res, rej) => {
+		let output = '';
+		let stdErr = '';
 
 		child.stdout.setEncoding('utf8'); // Ensure data is treated as UTF-8 characters
 
 		child.stdout.on('data', (chunk) => {
-			inputString += chunk; // Append each data chunk to the string
+			output += chunk; // Append each data chunk to the string
 		});
 
-		child.stdout.on('end', () => {
+		child.stderr.on('data', (chunk) => {
+			stdErr += chunk;
+		});
+
+		child.on('exit', () => {
+			if (stdErr) {
+				rej(stdErr);
+			}
+
 			// All data has been received, 'inputString' now contains the complete stdin content
 			res(
 				topLevel
-					? inputString
-					: inputString.slice(
-							'<span class="brace">}</span>'.length,
-							inputString.length - 1 - '<span class="brace">}</span>'.length,
-						),
+					? output
+					: output.slice(
+						'<span class="brace">}</span>'.length,
+						output.length - 1 - '<span class="brace">}</span>'.length,
+					),
 			);
 		});
 	});
@@ -140,7 +149,7 @@ const remarkCustomCodeBlock: () => Plugin<any[], Root> = () => {
 			codeNodes.push(node);
 		});
 
-		const {} = await PromisePool.withConcurrency(8)
+		const { } = await PromisePool.withConcurrency(8)
 			.for(codeNodes)
 			.process(async (node) => {
 				const rawLang = node.lang ?? 'plaintext';
@@ -202,15 +211,14 @@ const remarkCustomCodeBlock: () => Plugin<any[], Root> = () => {
 				<div class='code-wrapper'>
 					${file ? `<div class='code-file-name'>${file}</div>` : ''}
 					<div style='position:relative'>
-					${
-						!noBadge
-							? `<div
+					${!noBadge
+						? `<div
 							class='language-badge'
 							style='background-color:${langColorMap[lang]?.bg ?? '#888'};color:${langColorMap[lang]?.fg ?? '#fff'}'
 						>
 							${langToName[lang]?.toUpperCase() ?? lang.toUpperCase()}
 						</div>`
-							: ''
+						: ''
 					}
 						<div class='code-block ${file ? 'code-with-file-name' : ''} ${lang}'>${dom.serialize()}</div>
 					</div>
