@@ -22,7 +22,6 @@ body {
 		bottom: 0;
 		z-index: -999;
 		background-color: var(--bg-color-to);
-		background: linear-gradient(var(--bg-color-from), var(--bg-color-to) 40%);
 	}
 
 	color: var(--text-color);
@@ -47,4 +46,14 @@ html {
 		'Open Sans',
 		'Helvetica Neue',
 		sans-serif;
+}
+
+a,
+a:link,
+a:visited {
+	color: var(--link-color);
+
+	&:hover {
+		color: var(--link-hovered-color);
+	}
 }

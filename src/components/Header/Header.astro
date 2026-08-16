@@ -9,30 +9,16 @@ import NavLink from './NavLink.astro';
 	.root {
 		display: flex;
 		align-items: center;
+		justify-content: space-between;
 		width: 100%;
 		position: fixed;
 		height: 60px;
 		top: 0;
 		padding: 0 1rem;
 
-		background-color: var(--bg-color-from);
-		box-shadow: 0px 0px 8px 1px rgba(0, 0, 0, 0.3);
+		background-color: var(--bg-color-to);
+		box-shadow: 0px 0px 8px 1px rgba(0, 0, 0, 0.1);
 		z-index: 1;
-	}
-
-	.nav {
-		display: flex;
-		flex-grow: 1;
-		justify-content: center;
-		gap: 1rem;
-	}
-
-	.toggle-wrapper {
-		display: none;
-	}
-
-	.nav-toggle {
-		display: none;
 	}
 
 	.name {
@@ -41,117 +27,8 @@ import NavLink from './NavLink.astro';
 		text-decoration: none;
 		color: var(--text-color);
 	}
-
-	.name::before {
-		content: 'Isaiah Gamble';
-	}
-
-	@media only screen and (max-width: $breakpoint) {
-		.nav {
-			display: none;
-			flex-direction: column;
-			position: fixed;
-			top: 60px;
-			left: 0;
-			right: 0;
-			gap: 0;
-			background-color: var(--bg-color-from);
-			background-image: linear-gradient(var(--bg-color-from) 5%, var(--bg-color-to) 99%);
-			box-shadow: 0px 8px 8px 0px rgba(0, 0, 0, 0.1);
-		}
-
-		.nav[data-opened] {
-			display: flex;
-		}
-
-		.toggle-wrapper {
-			display: flex;
-			flex-grow: 1;
-			justify-content: center;
-		}
-
-		.nav-toggle {
-			display: block;
-			border: 0;
-			background-color: transparent;
-			cursor: pointer;
-		}
-
-		.name::before {
-			content: 'Isaiah G';
-		}
-	}
 </style>
 <header id='header' class='root'>
-	<a class='name' href='/'></a>
-	<div class='toggle-wrapper'>
-		<button id='nav-toggle' class='nav-toggle' aria-label='Toggle Navigation'>
-			<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'>
-				<path d='M24 6h-24v-4h24v4zm0 4h-24v4h24v-4zm0 8h-24v4h24v-4z'></path>
-			</svg>
-		</button>
-	</div>
-	<nav id='nav' class='nav'>
-		<NavLink href='/' label='Home' />
-		<NavLink href='/posts' label='Posts' />
-	</nav>
+	<a class='name' href='/'>Isaiah's Blog</a>
 	<ThemeSwitch transition:persist />
 </header>
-<script>
-	(() => {
-		const html = document.querySelector('html')!;
-		const nav = document.getElementById('nav') as HTMLElement;
-		const header = document.getElementById('header') as HTMLElement;
-		const toggle = document.getElementById('nav-toggle') as HTMLButtonElement;
-
-		const setupMenu = (nav: HTMLElement, toggle: HTMLButtonElement) => {
-			toggle.addEventListener('click', () => {
-				if (nav.dataset.opened) {
-					delete nav.dataset.opened;
-					header.style.boxShadow = '';
-				} else {
-					nav.dataset.opened = 'true';
-					header.style.boxShadow = 'none';
-				}
-			});
-
-			// listen for theme change and redraw with new theme
-			const observer = new MutationObserver((list) => {
-				for (const mutation of list) {
-					if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
-						toggle.children[0].setAttribute(
-							'fill',
-							html.dataset.theme === 'dark' ? 'white' : 'black',
-						);
-					}
-				}
-			});
-			observer.observe(html, { childList: false, attributes: true, subtree: false });
-			toggle.children[0].setAttribute(
-				'fill',
-				html.dataset.theme === 'dark' ? 'white' : 'black',
-			);
-		};
-
-		// close menu if a click ocurred outside of it
-		window.addEventListener('click', (e) => {
-			const nav = document.getElementById('nav') as HTMLElement;
-			const toggle = document.getElementById('nav-toggle') as HTMLButtonElement;
-			const opened = nav.dataset.opened;
-
-			// @ts-expect-error
-			if (opened && !toggle.contains(e.target) && !nav.contains(e.target)) {
-				delete nav.dataset.opened;
-			}
-		});
-
-		// need to re-setup on navigation because elements are replaced
-		window.addEventListener('flamethrower:router:end', () => {
-			const nav = document.getElementById('nav') as HTMLElement;
-			const toggle = document.getElementById('nav-toggle') as HTMLButtonElement;
-			setupMenu(nav, toggle);
-		});
-
-		setupMenu(nav, toggle);
-	})();
-</script>
