@@ -7,7 +7,6 @@ import robotsTxt from 'astro-robots-txt';
 import { type Plugin } from 'unified';
 import { type Code, type Root } from 'mdast';
 import { visit } from 'unist-util-visit';
-import playformCompress from '@playform/compress';
 import hljs from 'highlight.js';
 import { JSDOM } from 'jsdom';
 import { PromisePool } from '@supercharge/promise-pool';
@@ -266,9 +265,6 @@ export default defineConfig({
 		mdx(),
 		robotsTxt({
 			sitemap: true,
-		}),
-		playformCompress({
-			Exclude: '.*\.html',
 		}),
 	],
 	markdown: {
