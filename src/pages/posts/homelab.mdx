@@ -1,0 +1,35 @@
+---
+layout: '@/layouts/PostLayout.astro'
+title: "My Homelab Setup: It Sucks, But It's Mine"
+summary: "I got my first home server! Here's why and how I set it up."
+author: 'Isaiah Gamble'
+publishDate: '20 August 2026'
+tags: ['Rust', 'Homelab']
+published: false
+---
+
+## Initial Interest
+
+During my first internship at Verkada last year (2025), I met a really interesting guy (you know who you are). He was cool in a lot of ways, but one of his quirks was that he was really into selfhosting services on a home server. We'd talk every morning and sometimes he'd update on his setup. Through these conversations, I very quickly became interested in starting to create and host my own services.
+
+I didn't have any friends in the area at the time, so I had plenty of time to work on various side projects and setting up some actually useful services seemed like a great idea!
+
+## What Makes a Homelab
+
+In my opinion, the main components of a home server setup are:
+
+1. Hardware: What you're running you're stuff on
+2. Internet Connectivity: how you reach your server from the outside, usually a VPN like [WireGuard](TODO) or [Tailscale](TODO)
+3. Reverse Proxy: Handles incoming traffic, does TLS termination and routing
+4. Service Orchestration: How you manage and run services, usually synonymous with container orchestration
+5. The Services: What you're running
+
+## The First Attempt
+
+Before I got my first home server, I actually selfhosted stuff in the cloud on the absolute cheapest ARM EC2 instance AWS had to offer. This was a pretty good way to get started and worked well when I was only running Rust services, which sip memory and CPU.
+
+## The Reverse Proxy
+
+I had a little bit of experience deploying stuff, so I knew I'd need a reverse proxy to put my services behind and that I wanted to use docker compose to declare my containers.
+
+Back in late 2022 I actually wrote a reverse proxy in Rust that I named [motorx](https://github.com/tsar-boomba/motorx) (pronounced: motor-x) that I immediately knew I wanted to use for TLS termination and routing. When I first started this selfhosting project, my plan was to have each service under a nested path. So `https://mydomain/feed` was served by one server and `https://mydomain/music` was transparently served by another. Once I started actually starting to integrate my services together, I quickly realized this was a terrible ide. Each service assumed it had exclusive access to the domain and would create cookies, redirect, etc as if it did.
